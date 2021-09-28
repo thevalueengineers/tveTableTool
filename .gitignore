@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/extdata/
+inst/output/
+inst/notebooks/*_cache/
+inst/notebooks/*_files/
+*.csv
+*.pdf
