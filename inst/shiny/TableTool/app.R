@@ -120,15 +120,18 @@ server <- function(input, output) {
             group_by(across(everything())) %>%
             count() %>%
             ungroup() %>%
-            pivot_wider(names_from = all_of(col_var()), values_from = n)
+            pivot_wider(names_from = all_of(col_var()), values_from = n) %>%
+            left_join(variable_labels(), by = c("name" = "variable")) %>%
+            relocate(label, .after = name)
 
         if(input$show_percents == TRUE) {
             dat <- dat %>%
                 group_by(name) %>%
-                mutate(across(-1, ~.x / sum(.x, na.rm = TRUE), 0))
+                mutate(across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0))
         }
 
-        names(dat) <- c("Variable", "Value", names(dat)[-c(1:2)])
+
+        names(dat) <- c("Variable", "Label", "Value", names(dat)[-c(1:3)])
 
         col_label <- filter(variable_labels(), variable == col_var()) %>%
             pull(label)
@@ -138,11 +141,12 @@ server <- function(input, output) {
             thead(
                 tr(
                     th(rowspan = 2, 'Variable'),
+                    th(rowspan = 2, 'Label'),
                     th(rowspan = 2, 'Value'),
-                    th(colspan = ncol(dat) - 2, col_label)
+                    th(colspan = ncol(dat) - 3, col_label)
                 ),
                 tr(
-                    lapply(names(dat)[-c(1:2)], th)
+                    lapply(names(dat)[-c(1:3)], th)
                 )
             )
         ))
@@ -159,15 +163,16 @@ server <- function(input, output) {
                 lengthMenu = list(c(100, 200, 500, 1000, -1), c("100", "200", "500", "1000", "All")),
                 scrollX = TRUE,
                 columnDefs = list(
-                    list(width = "50px", targets = 0:1),
-                    list(width = "200px", targets = 2:(ncol(dat) - 1))
+                    list(width = "50px", targets = c(0, 2)),
+                    list(width = "200px", targets = 1),
+                    list(width = "100px", targets = 3:(ncol(dat) - 1))
                 )
             )
         )
 
         if(input$show_percents == TRUE) {
             out <- out %>%
-                formatPercentage(3:ncol(dat), 2)
+                formatPercentage(4:ncol(dat), 2)
         }
         out
 
