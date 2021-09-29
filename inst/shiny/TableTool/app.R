@@ -55,7 +55,9 @@ server <- function(input, output) {
     options(shiny.maxRequestSize=1024*1024^2)
 
     # load data
-    imported <- import_file_server("load_data")
+    imported <- import_file_server("load_data",
+                                   trigger_return = "change",
+                                   btn_show_data = FALSE)
 
     # remove OEs
     tab_data <- reactive({
