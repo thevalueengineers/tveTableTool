@@ -154,7 +154,11 @@ server <- function(input, output) {
             rownames = FALSE,
             options = list(
                 pageLength = 100,
-                lengthMenu = c(100, 200, 500, 1000)
+                lengthMenu = c(100, 200, 500, 1000),
+                columnDefs = list(
+                    list(width = "50px", targets = 0:1),
+                    list(width = "200px", targets = 2:(ncol(dat) - 1))
+                )
             )
         )
 
