@@ -152,7 +152,10 @@ server <- function(input, output) {
             dat,
             container = sketch,
             rownames = FALSE,
+            extensions = "Buttons",
             options = list(
+                dom = "tpB",
+                buttons = c("copy", "csv", "excel"),
                 pageLength = 100,
                 lengthMenu = c(100, 200, 500, 1000),
                 columnDefs = list(
