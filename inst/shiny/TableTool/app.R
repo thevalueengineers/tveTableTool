@@ -123,8 +123,27 @@ server <- function(input, output) {
 
         names(dat) <- c("Variable", "Value", names(dat)[-c(1:2)])
 
+        col_label <- filter(variable_labels(), variable == col_var()) %>%
+            pull(label)
+
+        sketch = htmltools::withTags(table(
+            class = 'display',
+            thead(
+                tr(
+                    th(rowspan = 2, 'Variable'),
+                    th(rowspan = 2, 'Value'),
+                    th(colspan = ncol(dat) - 2, col_label)
+                ),
+                tr(
+                    lapply(names(dat)[-c(1:2)], th)
+                )
+            )
+        ))
+
         out <- datatable(
             dat,
+            container = sketch,
+            rownames = FALSE,
             options = list(
                 pageLength = 100,
                 lengthMenu = c(100, 200, 500, 1000)
