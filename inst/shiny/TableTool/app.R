@@ -104,11 +104,13 @@ server <- function(input, output) {
     output$out_tab <- renderDataTable({
         req(input$row_var)
 
-        # row_quo <- enquo(row_var())
-        # col_quo <- enquo(col_var())
 
-            mutate(across(everything(), haven::as_factor)) %>%
         dat <- select(tab_data(), all_of(c(row_var(), col_var()))) %>%
+            # if labelled convert to ordered factor
+            mutate(across(where(is.labelled), ~haven::as_factor(.x, ordered = TRUE))) %>%
+            mutate(across(where(~!is.factor(.x)), ~factor(.x, levels = sort(unique(.x))))) %>%
+            mutate(across(everything(), forcats::fct_explicit_na)) %>%
+            mutate(across(everything(), as.character)) %>%
             pivot_longer(-all_of(col_var())) %>%
             group_by(across(everything())) %>%
             count() %>%
