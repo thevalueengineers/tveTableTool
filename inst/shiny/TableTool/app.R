@@ -72,7 +72,8 @@ server <- function(input, output) {
             choices = variable_labels()$label[-1],
             multiple = TRUE,
             options = list(
-                `live-search` = TRUE
+                `live-search` = TRUE,
+                `actions-box` = TRUE
             )
         )
     })
