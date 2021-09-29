@@ -43,9 +43,7 @@ ui <- fluidPage(
             ),
 
 
-            dataTableOutput("out_tab"),
-            textOutput("row_chosen"),
-            textOutput("col_chosen"),
+            DT::dataTableOutput("out_tab")
         )
     )
 )
@@ -101,7 +99,7 @@ server <- function(input, output) {
 
 
     # output table
-    output$out_tab <- renderDataTable({
+    output$out_tab <- DT::renderDataTable({
         req(input$row_var)
 
 
@@ -118,13 +116,26 @@ server <- function(input, output) {
             pivot_wider(names_from = all_of(col_var()), values_from = n)
 
         if(input$show_percents == TRUE) {
-            dat %>%
+            dat <- dat %>%
                 group_by(name) %>%
-                mutate(across(-1, ~.x * 100 / sum(.x, na.rm = TRUE), 0))
-        } else {
-            dat
+                mutate(across(-1, ~.x / sum(.x, na.rm = TRUE), 0))
         }
 
+        names(dat) <- c("Variable", "Value", names(dat)[-c(1:2)])
+
+        out <- datatable(
+            dat,
+            options = list(
+                pageLength = 100,
+                lengthMenu = c(100, 200, 500, 1000)
+            )
+        )
+
+        if(input$show_percents == TRUE) {
+            out <- out %>%
+                formatPercentage(3:ncol(dat), 2)
+        }
+        out
 
 
     })
