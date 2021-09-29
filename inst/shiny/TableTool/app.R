@@ -4,6 +4,9 @@ library(datamods)
 library(tveDataLoader)
 library(dplyr)
 library(CelloSegmentation)
+library(tidyr)
+library(labelled)
+library(DT)
 
 ui <- fluidPage(
 
