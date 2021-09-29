@@ -58,7 +58,13 @@ server <- function(input, output) {
     # load data
     imported <- import_file_server("load_data")
 
-    variable_labels <- reactive({get_varLabels(imported$data())})
+    # remove OEs
+    tab_data <- reactive({
+        req(imported$data())
+        select(imported$data(), where(is.numeric))
+    })
+
+    variable_labels <- reactive({get_varLabels(tab_data())})
 
     # row selection ui
     output$row_choice <- renderUI({
@@ -101,8 +107,8 @@ server <- function(input, output) {
         # row_quo <- enquo(row_var())
         # col_quo <- enquo(col_var())
 
-        dat <- select(imported$data(), all_of(c(row_var(), col_var()))) %>%
             mutate(across(everything(), haven::as_factor)) %>%
+        dat <- select(tab_data(), all_of(c(row_var(), col_var()))) %>%
             pivot_longer(-all_of(col_var())) %>%
             group_by(across(everything())) %>%
             count() %>%
