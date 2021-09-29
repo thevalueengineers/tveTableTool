@@ -20,22 +20,26 @@ ui <- fluidPage(
     ),
 
 
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
 
-        sidebarPanel(
-            wellPanel(
-                h3("Choose your rows"),
-                uiOutput("row_choice")
-            ),
-            wellPanel(
-                h3("Choose your columns"),
-                uiOutput("col_choice")
-            )
+    # sidebarLayout(
+
+    fluidRow(
+        column(6,
+               wellPanel(
+                   h3("Choose your row variables"),
+                   uiOutput("row_choice")
+               )
+        ),
+        column(6,
+               wellPanel(
+                   h3("Choose your column variable"),
+                   uiOutput("col_choice")
+               )
+        )
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
+        wellPanel(
             switchInput(
                 inputId = "show_percents",
                 onLabel = "Percentages",
@@ -46,7 +50,7 @@ ui <- fluidPage(
 
             DT::dataTableOutput("out_tab")
         )
-    )
+    # )
 )
 
 # Define server logic required to draw a histogram
