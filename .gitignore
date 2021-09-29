@@ -8,3 +8,5 @@ inst/notebooks/*_cache/
 inst/notebooks/*_files/
 *.csv
 *.pdf
+
+inst/shiny/*/rsconnect/*.*
