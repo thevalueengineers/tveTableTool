@@ -39,7 +39,8 @@ ui <- fluidPage(
             switchInput(
                 inputId = "show_percents",
                 onLabel = "Percentages",
-                offLabel = "Counts"
+                offLabel = "Counts",
+                value = TRUE
             ),
 
 
