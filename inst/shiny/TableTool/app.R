@@ -91,9 +91,9 @@ server <- function(input, output) {
         )
     })
 
-    # convert row & column selection in row variable
+    # get row & column variable names of selected variables
     row_var <- reactive({
-        variable_labels()[variable_labels()$label == input$row_var, ]$variable
+        variable_labels()[variable_labels()$label %in% input$row_var, ]$variable
     })
     col_var <- reactive({
         variable_labels()[variable_labels()$label == input$col_var, ]$variable
