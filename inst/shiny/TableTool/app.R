@@ -154,7 +154,7 @@ server <- function(input, output) {
             rownames = FALSE,
             extensions = "Buttons",
             options = list(
-                dom = "Bplt",
+                dom = "Bplft",
                 buttons = c("copy", "csv", "excel"),
                 pageLength = 100,
                 lengthMenu = list(c(100, 200, 500, 1000, -1), c("100", "200", "500", "1000", "All")),
