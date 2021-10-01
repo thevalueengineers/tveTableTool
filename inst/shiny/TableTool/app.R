@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyr)
 library(labelled)
 library(DT)
+library(tveTableTool)
 
 ui <- fluidPage(
 
@@ -109,29 +110,13 @@ server <- function(input, output) {
     output$out_tab <- DT::renderDataTable({
         req(input$row_var)
 
-
-        dat <- select(tab_data(), all_of(c(row_var(), col_var()))) %>%
-            # if labelled convert to ordered factor
-            mutate(across(where(is.labelled), ~haven::as_factor(.x, ordered = TRUE))) %>%
-            mutate(across(where(~!is.factor(.x)), ~factor(.x, levels = sort(unique(.x))))) %>%
-            mutate(across(everything(), forcats::fct_explicit_na)) %>%
-            mutate(across(everything(), as.character)) %>%
-            pivot_longer(-all_of(col_var())) %>%
-            group_by(across(everything())) %>%
-            count() %>%
-            ungroup() %>%
-            pivot_wider(names_from = all_of(col_var()), values_from = n) %>%
-            left_join(variable_labels(), by = c("name" = "variable")) %>%
-            relocate(label, .after = name)
-
-        if(input$show_percents == TRUE) {
-            dat <- dat %>%
-                group_by(name) %>%
-                mutate(across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0))
-        }
-
-
-        names(dat) <- c("Variable", "Label", "Value", names(dat)[-c(1:3)])
+        dat <- generate_table(
+            tab_data(),
+            row_var(),
+            col_var(),
+            variable_labels(),
+            input$show_percents
+        )
 
         col_label <- filter(variable_labels(), variable == col_var()) %>%
             pull(label)
