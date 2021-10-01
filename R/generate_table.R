@@ -19,24 +19,24 @@ generate_table <- function(dat,
                            variable_labels,
                            percents = FALSE) {
 
-  out <- select(dat, all_of(c(row_vars, col_var))) %>%
+  out <- dplyr::select(dat, dplyr::all_of(c(row_vars, col_var))) %>%
     # if labelled convert to ordered factor
-    mutate(across(where(is.labelled), ~haven::as_factor(.x, ordered = TRUE))) %>%
-    mutate(across(where(~!is.factor(.x)), ~factor(.x, levels = sort(unique(.x))))) %>%
-    mutate(across(everything(), forcats::fct_explicit_na)) %>%
-    mutate(across(everything(), as.character)) %>%
-    pivot_longer(-all_of(col_var)) %>%
-    group_by(across(everything())) %>%
-    count() %>%
-    ungroup() %>%
-    pivot_wider(names_from = all_of(col_var), values_from = n) %>%
-    left_join(variable_labels, by = c("name" = "variable")) %>%
-    relocate(label, .after = name)
+    dplyr::mutate(dplyr::across(where(labelled::is.labelled), ~haven::as_factor(.x, ordered = TRUE))) %>%
+    dplyr::mutate(dplyr::across(where(~!is.factor(.x)), ~factor(.x, levels = sort(unique(.x))))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::everything(), forcats::fct_explicit_na)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::everything(), as.character)) %>%
+    tidyr::pivot_longer(-tidyselect::all_of(col_var)) %>%
+    dplyr::group_by(dplyr::across(tidyselect::everything())) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(names_from = tidyselect::all_of(col_var), values_from = n) %>%
+    dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
+    dplyr::relocate(label, .after = name)
 
   if(percents == TRUE) {
     out <- out %>%
-      group_by(name) %>%
-      mutate(across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0))
+      dplyr::group_by(name) %>%
+      dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0))
   }
 
 
