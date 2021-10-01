@@ -3,3 +3,4 @@
 export(generate_table)
 import(magrittr)
 import(utils)
+importFrom(rlang,.data)

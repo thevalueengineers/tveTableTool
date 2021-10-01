@@ -6,7 +6,10 @@ library(dplyr)
 library(tidyr)
 library(labelled)
 library(DT)
-library(tveTableTool)
+# library(tveTableTool)
+devtools::load_all()
+
+options(shiny.maxRequestSize=2024*1024^2)
 
 ui <- fluidPage(
 
@@ -15,28 +18,58 @@ ui <- fluidPage(
 
     # load data ----
     wellPanel(
-        h3("Load spss data"),
+        h3("1. Load spss data"),
         import_file_ui("load_data", file_types = ".sav")
+    ),
+
+    # set weight and filters ----
+    wellPanel(
+        h3("2. Include weight and filter variables"),
+        fluidRow(
+            column(6,
+                   wellPanel(
+                       materialSwitch(
+                           inputId = "inc_weight",
+                           label = "Include weighting variable",
+                           value = FALSE,
+                           status = "primary"
+                       ),
+                       uiOutput("weight_variable")
+                   )
+            ),
+            column(6,
+                   wellPanel(
+                       materialSwitch(
+                           inputId = "inc_filters",
+                           label = "Include respondent filters",
+                           value = FALSE,
+                           status = "primary"
+                       )
+                   )
+            )
+        )
     ),
 
 
 
-    # sidebarLayout(
-
-    fluidRow(
-        column(6,
-               wellPanel(
-                   h3("Choose your row variables"),
-                   uiOutput("row_choice")
-               )
-        ),
-        column(6,
-               wellPanel(
-                   h3("Choose your column variable"),
-                   uiOutput("col_choice")
-               )
+    # pick row and column vars ----
+    wellPanel(
+        h3("3. Choose row and column variables"),
+        fluidRow(
+            column(6,
+                   wellPanel(
+                       h3("Choose your row variables"),
+                       uiOutput("row_choice")
+                   )
+            ),
+            column(6,
+                   wellPanel(
+                       h3("Choose your column variable"),
+                       uiOutput("col_choice")
+                   )
+            )
         )
-        ),
+    ),
 
         # Show a plot of the generated distribution
         wellPanel(
@@ -56,7 +89,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    options(shiny.maxRequestSize=1024*1024^2)
+
 
     # load data
     imported <- import_file_server("load_data",
@@ -66,10 +99,40 @@ server <- function(input, output) {
     # remove OEs
     tab_data <- reactive({
         req(imported$data())
-        select(imported$data(), where(is.numeric))
+        select(imported$data(), where(is.numeric)) %>%
+            # add no_weighting variable
+            mutate(no_weighting = 1)
     })
 
-    variable_labels <- reactive({get_varLabels(tab_data())})
+    variable_labels <- reactive({
+        vars_with_labels <- get_varLabels(tab_data())
+        vars_without_labels <- names(tab_data())[!names(tab_data()) %in% vars_with_labels$variable]
+
+        # add vars without labels to variable_labels
+        bind_rows(
+            vars_with_labels,
+            tibble(
+                variable = vars_without_labels,
+                label = vars_without_labels
+            )
+        ) %>%
+            # make sure no_weighting var isn't included
+            filter(variable != "no_weighting")
+    })
+
+    # weight variable selection
+    output$weight_variable <- renderUI({
+        if(input$inc_weight == TRUE) {
+            pickerInput(
+                "weight_variable",
+                label = "Weight variable",
+                choices = variable_labels()$label[-1],
+                options = list(
+                    `live-search` = TRUE
+                )
+            )
+        }
+    })
 
     # row selection ui
     output$row_choice <- renderUI({
@@ -97,7 +160,14 @@ server <- function(input, output) {
         )
     })
 
-    # get row & column variable names of selected variables
+    # get weight, row & column variable names of selected variables
+    weight_var <- reactive({
+        if(input$inc_weight == FALSE){
+            weight <- "no_weighting"
+        } else {
+        variable_labels()[variable_labels()$label %in% input$weight_variable, ]$variable
+        }
+    })
     row_var <- reactive({
         variable_labels()[variable_labels()$label %in% input$row_var, ]$variable
     })
@@ -114,6 +184,7 @@ server <- function(input, output) {
             tab_data(),
             row_var(),
             col_var(),
+            weight_var(),
             variable_labels(),
             input$show_percents
         )
@@ -161,11 +232,10 @@ server <- function(input, output) {
         }
         out
 
-
     })
 
-    output$row_chosen <- renderText({row_var()})
-    output$col_chosen <- renderText({col_var()})
+    # output$row_chosen <- renderText({row_var()})
+    # output$col_chosen <- renderText({col_var()})
 }
 
 # Run the application

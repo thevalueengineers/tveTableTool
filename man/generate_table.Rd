@@ -4,7 +4,14 @@
 \alias{generate_table}
 \title{Generate frequency / proportions table from survey data}
 \usage{
-generate_table(dat, row_vars, col_var, variable_labels, percents = FALSE)
+generate_table(
+  dat,
+  row_vars,
+  col_var,
+  weight_var,
+  variable_labels,
+  percents = FALSE
+)
 }
 \arguments{
 \item{dat}{A dataframe containing the variables to be used as rows and
@@ -13,8 +20,11 @@ columns in the output table.}
 \item{row_vars}{Character vector containing the variables to be used as rows
 in the table.}
 
-\item{col_var}{Character string containing the variables ot be used as
+\item{col_var}{Character string containing the variables to be used as
 columns in the output table.}
+
+\item{weight_var}{Character string containing the variable name of the
+weight to be used.}
 
 \item{variable_labels}{A dataframe consisting of 2 columns:
 \enumerate{
