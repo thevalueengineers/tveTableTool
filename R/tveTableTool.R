@@ -1,4 +1,6 @@
-#' What the Package Does (one line, title case)
+#' Shiny app for simple interactive tables
+#'
+#' @description Shiny app for simple interactive tables
 #'
 #' @import magrittr
 #'

@@ -3,4 +3,7 @@
 \docType{package}
 \name{tveTableTool}
 \alias{tveTableTool}
-\title{What the Package Does (one line, title case)}
+\title{Shiny app for simple interactive tables}
+\description{
+Shiny app for simple interactive tables
+}
