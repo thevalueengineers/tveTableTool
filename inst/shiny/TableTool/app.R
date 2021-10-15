@@ -134,12 +134,24 @@ server <- function(input, output) {
         }
     })
 
+    # variables available for column & row selection
+    selection_vars <- reactive({
+        if(input$inc_weight == FALSE) {
+            out <- variable_labels()
+        } else {
+            out <- filter(variable_labels(), variable != input$weight_variable)
+        }
+        out %>%
+            slice(-1) %>%
+            pull(label)
+    })
+
     # row selection ui
     output$row_choice <- renderUI({
         pickerInput(
             "row_var",
             label = "Row variables",
-            choices = variable_labels()$label[-1],
+            choices = selection_vars(),
             multiple = TRUE,
             options = list(
                 `live-search` = TRUE,
@@ -153,7 +165,7 @@ server <- function(input, output) {
         pickerInput(
             "col_var",
             label = "Column variables",
-            choices = variable_labels()$label[-1],
+            choices = selection_vars(),
             options = list(
                 `live-search` = TRUE
             )
