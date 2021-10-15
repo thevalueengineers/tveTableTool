@@ -25,6 +25,11 @@ generate_table <- function(dat,
                            percents = FALSE) {
 
   out <- dplyr::select(dat, dplyr::all_of(c(row_vars, col_var, weight_var))) %>%
+    # add a specific column variable in case col_var is also selected as a row
+    # variable
+    dplyr::mutate(column = .data[[col_var]]) %>%
+    # now reselect leaving out col_var unless it is in row_vars
+    dplyr::select(dplyr::all_of(c(row_vars, weight_var)), column) %>%
     # if labelled convert to ordered factor
     dplyr::mutate(
       dplyr::across(
@@ -54,12 +59,12 @@ generate_table <- function(dat,
         as.character
       )
     ) %>%
-    tidyr::pivot_longer(-tidyselect::all_of(c(col_var, weight_var))) %>%
+    tidyr::pivot_longer(-c(tidyselect::all_of(weight_var), column)) %>%
     dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
     dplyr::count(wt = .data[[weight_var]]) %>%
     dplyr::ungroup() %>%
     tidyr::pivot_wider(
-      names_from = tidyselect::all_of(col_var),
+      names_from = column,
       values_from = n
     ) %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
