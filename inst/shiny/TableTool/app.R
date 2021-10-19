@@ -44,7 +44,8 @@ ui <- fluidPage(
                            label = "Include respondent filters",
                            value = FALSE,
                            status = "primary"
-                       )
+                       ),
+                       uiOutput("filter_variables")
                    )
             )
         )
@@ -73,6 +74,7 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         wellPanel(
+            tags$strong("Show counts or perecentages"),
             switchInput(
                 inputId = "show_percents",
                 onLabel = "Percentages",
@@ -81,6 +83,11 @@ ui <- fluidPage(
             ),
 
 
+            uiOutput("filters"),
+            # textOutput("filter_vars_selected"),
+            # filter_data_ui("filters"),
+            hr(),
+            tags$strong("Output table"),
             DT::dataTableOutput("out_tab")
         )
     # )
@@ -128,6 +135,21 @@ server <- function(input, output) {
                 "weight_variable",
                 label = "Weight variable",
                 choices = variable_labels()$label[-1],
+                options = list(
+                    `live-search` = TRUE
+                )
+            )
+        }
+    })
+
+    # filter variable selection ----
+    output$filter_variables <- renderUI({
+        if(input$inc_filters == TRUE) {
+            pickerInput(
+                "filter_variables",
+                label = "Filter variable",
+                choices = variable_labels()$label[-1],
+                multiple = TRUE,
                 options = list(
                     `live-search` = TRUE
                 )
@@ -188,13 +210,46 @@ server <- function(input, output) {
         variable_labels()[variable_labels()$label == input$col_var, ]$variable
     })
 
+    # filters ----
+    output$filters <- renderUI({
+        if (input$inc_filters == TRUE) {
+            tagList(
+                hr(),
+                tags$strong("Respondent filters"),
+                br(),
+                filter_data_ui("filters"),
+            )
+        }
+    })
+
+    filter_vars <- reactive({
+        setNames(
+            variable_labels()[variable_labels()$label %in% input$filter_variables, ]$variable,
+            variable_labels()[variable_labels()$label %in% input$filter_variables, ]$label
+        )
+    })
+
+
+    filtering <- filter_data_server(
+        id = "filters",
+        data = reactive(
+            mutate(
+                tab_data(),
+                across(all_of(as.character(filter_vars())), haven::as_factor)
+            )
+        ),
+        vars = filter_vars,
+        name = reactive("data")
+    )
 
     # output table ----
     output$out_tab <- DT::renderDataTable({
         req(input$row_var)
 
-        dat <- generate_table(
-            tab_data(),
+        dat <- if (input$inc_filters == TRUE) {filtering$filtered()} else {tab_data()}
+
+        tab <- generate_table(
+            dat,
             row_var(),
             col_var(),
             weight_var(),
@@ -203,11 +258,11 @@ server <- function(input, output) {
         )
 
         # fix order of table
-        dat <- inner_join(
+        tab <- inner_join(
             get_valLabels(tab_data()) %>%
                 filter(variable %in% row_var()) %>%
                 select(-value),
-            dat,
+            tab,
             by = c("variable" = "Variable", "value label" = "Value")
         ) %>%
             select(variable, Label, `value label`, everything())
@@ -222,16 +277,16 @@ server <- function(input, output) {
                     th(rowspan = 2, 'Variable'),
                     th(rowspan = 2, 'Label'),
                     th(rowspan = 2, 'Value'),
-                    th(colspan = ncol(dat) - 3, col_label)
+                    th(colspan = ncol(tab) - 3, col_label)
                 ),
                 tr(
-                    lapply(names(dat)[-c(1:3)], th)
+                    lapply(names(tab)[-c(1:3)], th)
                 )
             )
         ))
 
         out <- datatable(
-            dat,
+            tab,
             container = sketch,
             rownames = FALSE,
             extensions = "Buttons",
@@ -244,14 +299,14 @@ server <- function(input, output) {
                 columnDefs = list(
                     list(width = "50px", targets = c(0, 2)),
                     list(width = "200px", targets = 1),
-                    list(width = "100px", targets = 3:(ncol(dat) - 1))
+                    list(width = "100px", targets = 3:(ncol(tab) - 1))
                 )
             )
         )
 
         if(input$show_percents == TRUE) {
             out <- out %>%
-                formatPercentage(4:ncol(dat), 2)
+                formatPercentage(4:ncol(tab), 2)
         }
         out
 
