@@ -202,6 +202,16 @@ server <- function(input, output) {
             input$show_percents
         )
 
+        # fix order of table
+        dat <- inner_join(
+            get_valLabels(tab_data()) %>%
+                filter(variable %in% row_var()) %>%
+                select(-value),
+            dat,
+            by = c("variable" = "Variable", "value label" = "Value")
+        ) %>%
+            select(variable, Label, `value label`, everything())
+
         col_label <- filter(variable_labels(), variable == col_var()) %>%
             pull(label)
 
