@@ -91,12 +91,12 @@ server <- function(input, output) {
 
 
 
-    # load data
+    # load data ----
     imported <- import_file_server("load_data",
                                    trigger_return = "change",
                                    btn_show_data = FALSE)
 
-    # remove OEs
+    # remove OEs ----
     tab_data <- reactive({
         req(imported$data())
         select(imported$data(), where(is.numeric)) %>%
@@ -104,6 +104,7 @@ server <- function(input, output) {
             mutate(no_weighting = 1)
     })
 
+    # variable labels ----
     variable_labels <- reactive({
         vars_with_labels <- get_varLabels(tab_data())
         vars_without_labels <- names(tab_data())[!names(tab_data()) %in% vars_with_labels$variable]
@@ -120,7 +121,7 @@ server <- function(input, output) {
             filter(variable != "no_weighting")
     })
 
-    # weight variable selection
+    # weight variable selection ----
     output$weight_variable <- renderUI({
         if(input$inc_weight == TRUE) {
             pickerInput(
@@ -134,7 +135,7 @@ server <- function(input, output) {
         }
     })
 
-    # variables available for column & row selection
+    # variables available for column & row selection ----
     selection_vars <- reactive({
         if(input$inc_weight == FALSE) {
             out <- variable_labels()
@@ -146,7 +147,7 @@ server <- function(input, output) {
             pull(label)
     })
 
-    # row selection ui
+    # row selection ui ----
     output$row_choice <- renderUI({
         pickerInput(
             "row_var",
@@ -160,7 +161,7 @@ server <- function(input, output) {
         )
     })
 
-    # column selection ui
+    # column selection ui ----
     output$col_choice <- renderUI({
         pickerInput(
             "col_var",
@@ -172,7 +173,7 @@ server <- function(input, output) {
         )
     })
 
-    # get weight, row & column variable names of selected variables
+    # get weight, row & column variable names of selected variables ----
     weight_var <- reactive({
         if(input$inc_weight == FALSE){
             weight <- "no_weighting"
@@ -188,7 +189,7 @@ server <- function(input, output) {
     })
 
 
-    # output table
+    # output table ----
     output$out_tab <- DT::renderDataTable({
         req(input$row_var)
 
@@ -246,8 +247,6 @@ server <- function(input, output) {
 
     })
 
-    # output$row_chosen <- renderText({row_var()})
-    # output$col_chosen <- renderText({col_var()})
 }
 
 # Run the application
