@@ -296,6 +296,7 @@ server <- function(input, output) {
                 pageLength = 100,
                 lengthMenu = list(c(100, 200, 500, 1000, -1), c("100", "200", "500", "1000", "All")),
                 scrollX = TRUE,
+                scrollY = "800px",
                 columnDefs = list(
                     list(width = "50px", targets = c(0, 2)),
                     list(width = "200px", targets = 1),
