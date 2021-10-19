@@ -68,7 +68,11 @@ generate_table <- function(dat,
       values_from = n
     ) %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
-    dplyr::relocate(label, .after = name)
+    dplyr::relocate(label, .after = name) %>%
+    # replace NA with 0
+    dplyr::mutate(
+      dplyr::across(-c(name, label, value), ~tidyr::replace_na(.x, 0))
+    )
 
   if(percents == TRUE) {
     out <- out %>%
