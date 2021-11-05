@@ -256,13 +256,11 @@ server <- function(input, output) {
     })
 
     meta <- reactive({
-        HTML(
-            paste(
-                paste0("Data File: ", as.character(imported$name())),
-                paste0("Filters: ", filtering_exp()),
-                paste0("Weighting: ", stringr::str_replace(weight_var(), "_", "")),
-                sep = "<br>"
-            )
+        paste(
+            paste0("Data File: ", as.character(imported$name())),
+            paste0("Filters: ", filtering_exp()),
+            paste0("Weighting: ", stringr::str_replace(weight_var(), "_", " ")),
+            sep = " | "
         )
     })
 
