@@ -1,13 +1,13 @@
 library(shiny)
 library(shinyWidgets)
-library(datamods)
+library(datamods) # tve version
 library(tveDataLoader)
 library(dplyr)
 library(tidyr)
 library(labelled)
 library(DT)
-library(tveTableTool)
-# devtools::load_all()
+# library(tveTableTool)
+devtools::load_all()
 
 options(shiny.maxRequestSize=2024*1024^2)
 
@@ -75,11 +75,13 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         wellPanel(
             tags$strong("Show counts or perecentages"),
-            switchInput(
+            radioGroupButtons(
                 inputId = "show_percents",
-                onLabel = "Percentages",
-                offLabel = "Counts",
-                value = TRUE
+                label = "Percents or counts",
+                choices = c("Column Percentages",
+                            "Row Percentages",
+                            "Counts"),
+                selected = "Column Percentages"
             ),
 
 
@@ -270,13 +272,18 @@ server <- function(input, output) {
 
         dat <- if (input$inc_filters == TRUE) {filtering$filtered()} else {tab_data()}
 
+        output_stat <- ifelse(input$show_percents == "Column Percentages",
+                              "columns",
+                              ifelse(input$show_percents == "Row Percentages",
+                                     "rows", "none"))
+
         tab <- generate_table(
             dat,
             row_var(),
             col_var(),
             weight_var(),
             variable_labels(),
-            input$show_percents
+            output_stat
         )
 
         # fix order of table
@@ -329,7 +336,7 @@ server <- function(input, output) {
             )
         )
 
-        if(input$show_percents == TRUE) {
+        if(output_stat %in% c("columns", "rows")) {
             out <- out %>%
                 formatPercentage(4:ncol(tab), 2)
         }
