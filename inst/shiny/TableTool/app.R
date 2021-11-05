@@ -313,10 +313,11 @@ server <- function(input, output) {
             tab,
             container = sketch,
             rownames = FALSE,
-            extensions = "Buttons",
+            extensions = c("Buttons", "RowGroup"),
             caption = meta(),
             options = list(
                 dom = "Bplft",
+                rowGroup = list(dataSrc = 1),
                 buttons = c("copy", "csv", "excel"),
                 pageLength = 100,
                 lengthMenu = list(c(100, 200, 500, 1000, -1), c("100", "200", "500", "1000", "All")),
