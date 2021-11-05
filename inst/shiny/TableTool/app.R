@@ -6,8 +6,9 @@ library(dplyr)
 library(tidyr)
 library(labelled)
 library(DT)
-# library(tveTableTool)
-devtools::load_all()
+library(tveTableTool)
+
+# devtools::load_all()
 
 options(shiny.maxRequestSize=2024*1024^2)
 
