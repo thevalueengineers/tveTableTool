@@ -23,6 +23,11 @@ generate_table <- function(dat,
                            weight_var,
                            variable_labels,
                            percents = FALSE) {
+  assertthat::assert_that(is.data.frame(dat))
+  assertthat::assert_that(is.character(row_vars))
+  assertthat::assert_that(is.character(col_var))
+  assertthat::assert_that(is.character(weight_var))
+  assertthat::assert_that(is.data.frame(variable_labels))
 
   out <- dplyr::select(dat, dplyr::all_of(c(row_vars, col_var, weight_var))) %>%
     # add a specific column variable in case col_var is also selected as a row
