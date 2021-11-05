@@ -242,6 +242,30 @@ server <- function(input, output) {
         name = reactive("data")
     )
 
+
+    # meta data for table ----
+    # filter expression
+    filtering_exp <- reactive({
+        expr <- toString(deparse(filtering$expr()))
+        expr <- ifelse(is.null(filtering$expr()), "Total sample", expr)
+
+        expr <- stringr::str_remove_all(expr, "%")
+        expr <- stringr::str_replace_all(expr, "\\!", "NOT")
+        expr <- paste("Sample definition:", expr)
+        expr
+    })
+
+    meta <- reactive({
+        HTML(
+            paste(
+                paste0("Data File: ", as.character(imported$name())),
+                paste0("Filters: ", filtering_exp()),
+                paste0("Weighting: ", stringr::str_replace(weight_var(), "_", "")),
+                sep = "<br>"
+            )
+        )
+    })
+
     # output table ----
     output$out_tab <- DT::renderDataTable({
         req(input$row_var)
@@ -290,6 +314,7 @@ server <- function(input, output) {
             container = sketch,
             rownames = FALSE,
             extensions = "Buttons",
+            caption = meta(),
             options = list(
                 dom = "Bplft",
                 buttons = c("copy", "csv", "excel"),
