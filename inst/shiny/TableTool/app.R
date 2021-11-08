@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(shinyWidgets)
 library(datamods) # tve version
 library(tveDataLoader)
@@ -7,12 +8,17 @@ library(tidyr)
 library(labelled)
 library(DT)
 library(tveTableTool)
+source("global.R")
+
+# before publishing, set this to FALSE
+dev <- FALSE
 
 # devtools::load_all()
 
 options(shiny.maxRequestSize=2024*1024^2)
 
 ui <- fluidPage(
+    useShinyjs(),
 
     # Application title
     titlePanel("TVE Tables Tool"),
@@ -96,9 +102,42 @@ ui <- fluidPage(
     # )
 )
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
+# for authentication
+ui_func <- function(req) {
+    if (dev == FALSE){
+        opts <- parseQueryString(req$QUERY_STRING)
+        if(is.null(opts$code))
+        {
+            auth_uri <- build_authorization_uri(resource, tenant, app, redirect_uri=redirect, version=2)
+            redir_js <- sprintf("location.replace(\"%s\");", auth_uri)
+            tags$script(HTML(redir_js))
+        }
+        else ui
+    } else ui
+}
 
+
+# Define server logic required to draw a histogram
+server <- function(input, output, session) {
+
+    # authentication ----
+    shinyjs::runjs(clean_url_js)
+
+    opts <- parseQueryString(isolate(session$clientData$url_search))
+    if(is.null(opts$code))
+        return()
+
+    # this assumes your app has a 'public client/native' redirect:
+    # if it is a 'web' redirect, include the client secret as the password argument
+    token <- get_azure_token(resource,
+                             tenant,
+                             app,
+                             password = "dGB7Q~m9hVVoAnCFywExDT_vOWIMVHtDMgLiS",
+                             auth_type="authorization_code",
+                             authorize_args=list(redirect_uri=redirect),
+                             version=2,
+                             use_cache=FALSE,
+                             auth_code=opts$code)
 
 
     # load data ----
@@ -348,4 +387,4 @@ server <- function(input, output) {
 }
 
 # Run the application
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui_func, server = server)
