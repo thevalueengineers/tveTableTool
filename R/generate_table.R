@@ -23,6 +23,10 @@
 #' @param percents Either "columns" for column percents, "rows" for row
 #' percents or "none" for counts.
 #'
+#' @return Tibble containing `Variable` name, variable `Label`, variable
+#' `Value`, a `Total` column and a column for each value within the specified
+#' column variable.
+#'
 #' @importFrom rlang .data
 #'
 #' @export
@@ -76,6 +80,8 @@ generate_table <- function(dat,
       )
     ) %>%
     tidyr::pivot_longer(-c(tidyselect::all_of(weight_var), column)) %>%
+    # add total column
+    dplyr::bind_rows(dplyr::mutate(., column = "Total")) %>%
     dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
     dplyr::count(wt = .data[[weight_var]]) %>%
     dplyr::ungroup() %>%
@@ -85,6 +91,7 @@ generate_table <- function(dat,
     ) %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
     dplyr::relocate(label, .after = name) %>%
+    dplyr::relocate(Total, .after = value) %>%
     # replace NA with 0
     dplyr::mutate(
       dplyr::across(-c(name, label, value), ~tidyr::replace_na(.x, 0))
@@ -96,11 +103,14 @@ generate_table <- function(dat,
       dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0))
   } else if (percents == "rows") {
     out <- out %>%
-      rowwise() %>%
-      mutate(sum = sum(c_across(-c(name:value)))) %>%
-      ungroup() %>%
-      mutate(across(-c(name:value), ~.x / sum)) %>%
-      select(-sum)
+      dplyr::rowwise() %>%
+      dplyr::mutate(sum = sum(dplyr::c_across(-c(name:Total)))) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(dplyr::across(-c(name:value), ~.x / sum)) %>%
+      dplyr::select(-sum) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(Total = sum(dplyr::c_across(-c(name:Total)))) %>%
+      dplyr::ungroup()
   }
 
 
