@@ -7,6 +7,8 @@
 #'
 #' @return Tibble as per \code\link[tveTableTool]{generate_table} with
 #' additional columns for indexes
+#'
+#' @export
 add_index <- function(tab) {
   tab %>%
     dplyr::mutate(
