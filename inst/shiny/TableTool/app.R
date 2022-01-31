@@ -80,26 +80,26 @@ ui <- fluidPage(
         )
     ),
 
-        # Show a plot of the generated distribution
-        wellPanel(
-            tags$strong("Show counts or perecentages"),
-            radioGroupButtons(
-                inputId = "show_percents",
-                label = "Percents or counts",
-                choices = c("Column Percentages",
-                            "Row Percentages",
-                            "Counts"),
-                selected = "Column Percentages"
-            ),
+    # Show a plot of the generated distribution
+    wellPanel(
+        tags$strong("Show counts or perecentages"),
+        radioGroupButtons(
+            inputId = "show_percents",
+            label = "Percents or counts",
+            choices = c("Column Percentages",
+                        "Row Percentages",
+                        "Counts"),
+            selected = "Column Percentages"
+        ),
 
 
-            uiOutput("filters"),
-            # textOutput("filter_vars_selected"),
-            # filter_data_ui("filters"),
-            hr(),
-            tags$strong("Output table"),
-            DT::dataTableOutput("out_tab")
-        )
+        uiOutput("filters"),
+        # textOutput("filter_vars_selected"),
+        # filter_data_ui("filters"),
+        hr(),
+        tags$strong("Output table"),
+        DT::dataTableOutput("out_tab")
+    )
     # )
 )
 
@@ -224,7 +224,7 @@ server <- function(input, output, session) {
         if(input$inc_weight == FALSE){
             weight <- "no_weighting"
         } else {
-        variable_labels()[variable_labels()$label %in% input$weight_variable, ]$variable
+            variable_labels()[variable_labels()$label %in% input$weight_variable, ]$variable
         }
     })
     row_var <- reactive({
