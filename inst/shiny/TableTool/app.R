@@ -121,25 +121,6 @@ ui_func <- function(req) {
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
 
-    # authentication ----
-    shinyjs::runjs(clean_url_js)
-
-    opts <- parseQueryString(isolate(session$clientData$url_search))
-    if(is.null(opts$code))
-        return()
-
-    # this assumes your app has a 'public client/native' redirect:
-    # if it is a 'web' redirect, include the client secret as the password argument
-    token <- get_azure_token(resource,
-                             tenant,
-                             app,
-                             password = secret,
-                             auth_type="authorization_code",
-                             authorize_args=list(redirect_uri=redirect),
-                             version=2,
-                             use_cache=FALSE,
-                             auth_code=opts$code)
-
 
     # load data ----
     imported <- import_file_server("load_data",
@@ -397,6 +378,27 @@ server <- function(input, output, session) {
         out
 
     })
+
+
+    # authentication ----
+    shinyjs::runjs(clean_url_js)
+
+    opts <- parseQueryString(isolate(session$clientData$url_search))
+    if(is.null(opts$code))
+        return()
+
+    # this assumes your app has a 'public client/native' redirect:
+    # if it is a 'web' redirect, include the client secret as the password argument
+    token <- get_azure_token(resource,
+                             tenant,
+                             app,
+                             password = secret,
+                             auth_type="authorization_code",
+                             authorize_args=list(redirect_uri=redirect),
+                             version=2,
+                             use_cache=FALSE,
+                             auth_code=opts$code)
+
 
 }
 
