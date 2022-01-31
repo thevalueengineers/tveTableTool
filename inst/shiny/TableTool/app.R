@@ -308,15 +308,19 @@ server <- function(input, output, session) {
     })
 
     # output table ----
-    output$out_tab <- DT::renderDataTable({
+    output_stat <- reactive({
+        ifelse(input$show_percents == "Column Percentages",
+               "columns",
+               ifelse(input$show_percents == "Row Percentages",
+                      "rows", "none"))
+    })
+
+
+    tab <- reactive({
         req(input$row_var)
+        req(input$col_var)
 
         dat <- if (input$inc_filters == TRUE) {filtering$filtered()} else {tab_data()}
-
-        output_stat <- ifelse(input$show_percents == "Column Percentages",
-                              "columns",
-                              ifelse(input$show_percents == "Row Percentages",
-                                     "rows", "none"))
 
         tab <- generate_table(
             dat,
@@ -324,7 +328,7 @@ server <- function(input, output, session) {
             col_var(),
             weight_var(),
             variable_labels(),
-            output_stat
+            output_stat()
         )
 
         # fix order of table
@@ -337,6 +341,15 @@ server <- function(input, output, session) {
         ) %>%
             select(variable, Label, `value label`, everything())
 
+
+
+
+    })
+
+    output$out_tab <- DT::renderDataTable({
+        req(col_var())
+
+
         col_label <- filter(variable_labels(), variable == col_var()) %>%
             pull(label)
 
@@ -347,16 +360,16 @@ server <- function(input, output, session) {
                     th(rowspan = 2, 'Variable'),
                     th(rowspan = 2, 'Label'),
                     th(rowspan = 2, 'Value'),
-                    th(colspan = ncol(tab) - 3, col_label)
+                    th(colspan = ncol(tab()) - 3, col_label)
                 ),
                 tr(
-                    lapply(names(tab)[-c(1:3)], th)
+                    lapply(names(tab())[-c(1:3)], th)
                 )
             )
         ))
 
         out <- datatable(
-            tab,
+            tab(),
             container = sketch,
             rownames = FALSE,
             extensions = c("Buttons", "RowGroup"),
@@ -372,14 +385,14 @@ server <- function(input, output, session) {
                 columnDefs = list(
                     list(width = "50px", targets = c(0, 2)),
                     list(width = "200px", targets = 1),
-                    list(width = "100px", targets = 3:(ncol(tab) - 1))
+                    list(width = "100px", targets = 3:(ncol(tab()) - 1))
                 )
             )
         )
 
-        if(output_stat %in% c("columns", "rows")) {
+        if(output_stat() %in% c("columns", "rows")) {
             out <- out %>%
-                formatPercentage(4:ncol(tab), 2)
+                formatPercentage(4:ncol(tab()), 2)
         }
         out
 
