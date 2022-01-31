@@ -10,8 +10,9 @@ library(DT)
 library(tveTableTool)
 source("global.R")
 
-# before publishing, set this to FALSE
-dev <- FALSE
+# detect whether running locally or on shinyapps
+dev <- Sys.getenv("R_CONFIG_ACTIVE") != "shinyapps"
+
 
 # devtools::load_all()
 
@@ -132,7 +133,7 @@ server <- function(input, output, session) {
     token <- get_azure_token(resource,
                              tenant,
                              app,
-                             password = "dGB7Q~m9hVVoAnCFywExDT_vOWIMVHtDMgLiS",
+                             password = secret,
                              auth_type="authorization_code",
                              authorize_args=list(redirect_uri=redirect),
                              version=2,

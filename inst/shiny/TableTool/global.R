@@ -1,7 +1,10 @@
 library(AzureAuth)
 
-tenant <- "ebab27c6-8c42-42ca-85ef-6a1d090a2219"
-app <- "2b2bc1db-504e-49d0-9ac8-8e5ba6d577a3"
+tenant <- Sys.getenv("TENANT", "")
+app <- Sys.getenv("APP_ID", "")
+secret <- Sys.getenv("APP_SECRET", "")
+if(secret == "") secret <- NULL
+
 
 # the Azure resource permissions needed
 # if your app doesn't use any Azure resources (you only want to do authentication),

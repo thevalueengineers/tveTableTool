@@ -10,3 +10,4 @@ inst/notebooks/*_files/
 *.pdf
 
 inst/shiny/*/rsconnect/*.*
+inst/shiny/*/.Renviron
