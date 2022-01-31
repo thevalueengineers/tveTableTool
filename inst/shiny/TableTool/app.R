@@ -228,9 +228,11 @@ server <- function(input, output, session) {
         }
     })
     row_var <- reactive({
+        req(input$row_var)
         variable_labels()[variable_labels()$label %in% input$row_var, ]$variable
     })
     col_var <- reactive({
+        req(input$col_var)
         variable_labels()[variable_labels()$label == input$col_var, ]$variable
     })
 
