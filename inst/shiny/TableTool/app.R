@@ -7,7 +7,7 @@ library(dplyr)
 library(tidyr)
 library(labelled)
 library(DT)
-library(tveTableTool)
+library(tveTableTool) # need to install the dev version for dev version of the app
 # devtools::load_all()
 source("global.R")
 source("helpers.R")
