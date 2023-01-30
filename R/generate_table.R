@@ -100,7 +100,7 @@ generate_table <- function(dat,
   if(percents == "columns") {
     out <- out %>%
       dplyr::group_by(name) %>%
-      dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0)) %>%
+      dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE))) %>%
       dplyr::ungroup()
   } else if (percents == "rows") {
     out <- out %>%
