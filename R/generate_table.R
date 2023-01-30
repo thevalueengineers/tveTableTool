@@ -69,7 +69,7 @@ generate_table <- function(dat,
     dplyr::mutate(
       dplyr::across(
         -tidyselect::all_of(weight_var),
-        forcats::fct_explicit_na
+        forcats::fct_na_value_to_level
       )
     ) %>%
     # convert everything to character so that we can pivot longer
