@@ -69,7 +69,7 @@ generate_table <- function(dat,
     dplyr::mutate(
       dplyr::across(
         -tidyselect::all_of(weight_var),
-        forcats::fct_explicit_na
+        forcats::fct_na_value_to_level
       )
     ) %>%
     # convert everything to character so that we can pivot longer
@@ -100,7 +100,7 @@ generate_table <- function(dat,
   if(percents == "columns") {
     out <- out %>%
       dplyr::group_by(name) %>%
-      dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE), 0)) %>%
+      dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE))) %>%
       dplyr::ungroup()
   } else if (percents == "rows") {
     out <- out %>%
