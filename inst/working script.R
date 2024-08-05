@@ -4,29 +4,10 @@ library(purrr)
 library(dplyr)
 library(stringr)
 library(haven)
+library(assertthat)
 
-#test ideas
-#number of unique variable rows in final data is equal to number of row_vars
+devtools::load_all()
 dat <- testTableData
-
-setup_summary_vars <- function() {
-
-  c(
-    paste0("s1_", sprintf("%02d", c(01:08, 99))),
-    "s2",
-    "s3",
-    "s4",
-    paste0("c2_", sprintf("%02d", c(01:05))),
-    "s5"
-  )
-
-}
-
-row_vars <- setup_summary_vars()
-col_var <- "s5"
-weight_var <- "no_weight"
-value_labels <- dat |> get_valLabels()
-variable_labels <- dat |> get_varLabels()
 
 generate_table_new <- function(dat,
                            row_vars,
@@ -42,14 +23,14 @@ generate_table_new <- function(dat,
   assertthat::assert_that(is.data.frame(variable_labels))
   # rlang::arg_match(percents, c("columns", "rows", "none"))
 
-#store a log of what order we want the data frame in
+#store a log of what order we want the data frame in based on the order of inputs
 rows_order <- data.frame(row_vars)
 order_df <- rows_order |>
-  mutate(order = rownames(order_df)) |>
+  mutate(order = rownames(rows_order)) |>
   rename(name = row_vars) |>
   mutate(order = as.numeric(order))
 
-#create data frame that detects whether multi or single code variable
+#create data frame that detects whether multi or single code variable. Anything missing is either numeric or string.
 
 var_type <- value_labels %>%
   split(.$variable) |>
@@ -66,7 +47,7 @@ var_type <- value_labels %>%
   bind_rows(.id = "variable") |>
   pivot_longer(everything(), names_to = "variable", values_to = "type")
 
-#flag character vars in data frame
+#flag character vars in data frame - TRUE = character
 character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
 
 #extract them from the data set so we can filter using it
@@ -86,14 +67,12 @@ final_type <- variable_labels |>
     TRUE ~ type
   ))
 
-# final_type_split <- final_type %>% split(.$variable)
-
 #filter by variable type and row vars
 mc_flag <- final_type |> filter(type == "MC") |> filter(variable %in% row_vars) |> pull(variable)
 single_flag <- final_type |> filter(type == "SC") |> filter(variable %in% row_vars) |> pull(variable)
 numeric_flag <- final_type |> filter(type == "NUM")  |> filter(variable %in% row_vars) |> pull(variable)
 
-#numeric and multi code
+#numeric and multi code calculations - weighted means
 number_out <- dat |>
   # add a specific column variable in case col_var is also selected as a row
   # variable
@@ -133,7 +112,7 @@ combined_number <- total_number |>
   mutate(value = "mean") |>
   select(name,label,value,everything())
 
-##single
+##single code calculations
 single_out <- dat |>
   # add a specific column variable in case col_var is also selected as a row
   # variable
@@ -186,10 +165,34 @@ output <- bind_rows(combined_number,single_out) |>
   arrange(order) |>
   select(-order)
 
-#check number of unique rows in table matches  number of row variables
+#check number of unique rows in table matches number of row variables
 assert_that(length(unique(output$name))==length(row_vars))
 
 
 return(output)
 
 }
+
+
+setup_summary_vars <- function() {
+
+  c(
+    paste0("s1_", sprintf("%02d", c(01:08, 99))),
+    "s2",
+    "s3",
+    "s4",
+    paste0("c2_", sprintf("%02d", c(01:05))),
+    "s5"
+  )
+
+}
+
+row_vars <- setup_summary_vars()
+col_var <- "s5"
+weight_var <- "no_weight"
+value_labels <- dat |> get_valLabels()
+variable_labels <- dat |> get_varLabels()
+
+generate_table_new(dat,row_vars,col_var,weight_var,variable_labels,value_labels)
+
+#still to do - add unit tests and assert that
