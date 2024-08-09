@@ -69,7 +69,7 @@ test_that("sum of values in columns 4 to n is equal to the number of those colum
 test_that("generate tables gives the right column names", {
   expect_equal(
     names(temp_combined_table),
-    c("name",
+    c("Variable",
       "label",
       "value",
       "Total",
@@ -83,7 +83,7 @@ test_that("generate tables gives the right column names", {
 test_that("generate tables gives the right column names", {
   expect_equal(
     names(temp_combined_table_unweighted),
-    c("name",
+    c("Variable",
       "label",
       "value",
       "Total",
