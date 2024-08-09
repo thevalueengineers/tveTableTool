@@ -15,7 +15,7 @@ test_that("index columns are added", {
     c(
       "Variable",
       "label",
-      "Value",
+      "value",
       "Total",
       "AnotherGender/Non-binary",
       "Female",
