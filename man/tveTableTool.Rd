@@ -2,6 +2,7 @@
 % Please edit documentation in R/tveTableTool.R
 \docType{package}
 \name{tveTableTool}
+\alias{-package}
 \alias{tveTableTool}
 \title{Shiny app for simple interactive tables}
 \description{
