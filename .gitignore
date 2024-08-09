@@ -4,6 +4,8 @@
 .Ruserdata
 inst/extdata/
 inst/output/
+inst/output/split working script.R
+inst/output/working script.R
 inst/notebooks/*_cache/
 inst/notebooks/*_files/
 *.csv
