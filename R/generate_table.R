@@ -144,7 +144,7 @@ mean_calcs <- function(dat,row_vars,col_var,weight_var,variable_labels,flag_list
     dplyr::left_join(group_number, by = "name") %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
     dplyr::mutate(value = "mean") %>%
-    dplyr::select(name, label, value, dplyr::everything())
+    dplyr::select(Variable = name, label, value, dplyr::everything())
 
   return(combined_number)
 
@@ -200,7 +200,7 @@ single_calcs <- function(dat, row_vars, col_var, weight_var, variable_labels, fl
         as.character
       )
     ) %>%
-    tidyr::pivot_longer(-c(weight_var, column)) %>%
+    tidyr::pivot_longer(-c(weight_var, column),names_to = "Variable") %>%
     # Add total column
     dplyr::bind_rows(dplyr::mutate(., column = "Total"))
 
@@ -223,14 +223,14 @@ single_calcs <- function(dat, row_vars, col_var, weight_var, variable_labels, fl
       names_from = column,
       values_from = n
     ) %>%
-    dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
-    dplyr::relocate(label, .after = name) %>%
+    dplyr::left_join(variable_labels, by = c("Variable" = "variable")) %>%
+    dplyr::relocate(label, .after = Variable) %>%
     dplyr::relocate(Total, .after = value) %>%
     # Replace NA with 0
     dplyr::mutate(
-      dplyr::across(-c(name, label, value), ~tidyr::replace_na(.x, 0))
+      dplyr::across(-c(Variable, label, value), ~tidyr::replace_na(.x, 0))
     ) %>%
-    dplyr::group_by(name) %>%
+    dplyr::group_by(Variable) %>%
     dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE))) %>%
     dplyr::ungroup()
 
@@ -311,18 +311,18 @@ generate_table <- function(dat,
   }
 
   # Store a log of the desired order based on input
-  rows_order <- data.frame(name = row_vars, stringsAsFactors = FALSE)
+  rows_order <- data.frame(Variable = row_vars, stringsAsFactors = FALSE)
   order_df <- rows_order |>
     dplyr::mutate(order = dplyr::row_number()) # Use row_number() to generate order
 
   # Join tables together and reorder
   output <- dplyr::bind_rows(mean_calcs_result, single_calcs_result) |>
-    dplyr::left_join(order_df, by = "name") |>
+    dplyr::left_join(order_df, by = "Variable") |>
     dplyr::arrange(order) |>
     dplyr::select(-order)
 
   # Check number of unique rows in table matches the number of row variables
-  assertthat::assert_that(length(unique(output$name)) == length(row_vars))
+  assertthat::assert_that(length(unique(output$Variable)) == length(row_vars))
 
   return(output)
 }
