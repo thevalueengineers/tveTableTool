@@ -19,7 +19,11 @@ Imports:
     shiny,
     tidyr,
     tidyselect,
-    tveDataLoader
+    tveDataLoader,
+    rlang,
+    purrr,
+    glue,
+    stringr
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
@@ -27,7 +31,7 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)

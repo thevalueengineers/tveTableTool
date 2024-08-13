@@ -359,7 +359,7 @@
     },
     "forcats": {
       "Package": "forcats",
-      "Version": "0.5.1",
+      "Version": "1.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "81c3244cab67468aac4c60550832655d",
