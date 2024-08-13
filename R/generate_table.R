@@ -94,15 +94,28 @@ identify_var_type <- function(dat,
 #'
 #' @examples ''
 
-mean_calcs <- function(dat,row_vars,col_var,weight_var,variable_labels,flag_list) {
+mean_calcs <- function(dat,
+                       col_var,
+                       weight_var,
+                       variable_labels,
+                       flag_list) {
 
   # Numeric and multi-code calculations - weighted means
   number_out <- dat %>%
     # Add a specific column variable in case col_var is also selected as a row variable
     dplyr::mutate(column = .data[[col_var]]) %>%
     dplyr::mutate(column = haven::as_factor(column)) %>%
-    dplyr::select(dplyr::all_of(c(flag_list$numeric_flag, flag_list$mc_flag, weight_var, "column"))) %>%
     # Now reselect leaving out col_var unless it is in row_vars
+    dplyr::select(
+      dplyr::all_of(
+        c(
+          flag_list$numeric_flag,
+          flag_list$mc_flag,
+          weight_var,
+          "column"
+          )
+        )
+      ) %>%
     # Add explicit NA level
     dplyr::mutate(
       dplyr::across(
@@ -172,7 +185,12 @@ mean_calcs <- function(dat,row_vars,col_var,weight_var,variable_labels,flag_list
 #'
 #' @examples ''
 #'
-single_calcs <- function(dat, row_vars, col_var, weight_var, variable_labels, flag_list) {
+single_calcs <- function(dat,
+                         # row_vars,
+                         col_var,
+                         weight_var,
+                         variable_labels,
+                         flag_list) {
 
   # Prepare the data
   prep <- dat %>%
@@ -342,7 +360,6 @@ generate_table <- function(dat,
     # Numeric and multi-code calculations
     mean_calcs_result <- mean_calcs(
       dat,
-      row_vars,
       col_var,
       weight_var,
       variable_labels,
@@ -357,7 +374,7 @@ generate_table <- function(dat,
     # Single code calculations
     single_calcs_result <- single_calcs(
       dat,
-      row_vars,
+      # row_vars,
       col_var,
       weight_var,
       variable_labels,
