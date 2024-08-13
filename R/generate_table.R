@@ -127,30 +127,22 @@ mean_calcs <- function(dat,
     #convert value to numeric so we can calculate means
     dplyr::mutate(value = as.numeric(value))
 
-  #condition to run unweighted or weighred tables
-  if (is.null(weight_var) || weight_var == "") {
-    # Unweighted mean calculations
+  # Weighted mean calculations
     group_number <- number_out %>%
       dplyr::group_by(name, column) %>%
-      dplyr::summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>%
+      dplyr::summarise(
+        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        .groups = 'drop'
+      ) %>%
       tidyr::pivot_wider(names_from = "column", values_from = "value")
 
     total_number <- number_out %>%
       dplyr::group_by(name) %>%
-      dplyr::summarise(value = mean(value, na.rm = TRUE), .groups = 'drop') %>%
+      dplyr::summarise(
+        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        .groups = 'drop'
+      ) %>%
       dplyr::rename(Total = value)
-  } else {
-    # Weighted mean calculations
-    group_number <- number_out %>%
-      dplyr::group_by(name, column) %>%
-      dplyr::summarise(value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE), .groups = 'drop') %>%
-      tidyr::pivot_wider(names_from = "column", values_from = "value")
-
-    total_number <- number_out %>%
-      dplyr::group_by(name) %>%
-      dplyr::summarise(value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE), .groups = 'drop') %>%
-      dplyr::rename(Total = value)
-  }
 
   # Join them up and add label to show mean
   combined_number <- total_number %>%
@@ -222,17 +214,9 @@ single_calcs <- function(dat,
     # Add total column
     dplyr::bind_rows(dplyr::mutate(., column = "Total"))
 
-  # unweighted count
-  if (is.null(weight_var)) {
-    counted <-  prep %>%
-      dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
-      dplyr::count()
-    #weighted count
-  } else {
-    counted <-  prep %>%
+  counted <-  prep %>%
       dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
       dplyr::count(wt = .data[[weight_var]])
-  }
 
     # Final transformations
   single_out <- counted %>%
@@ -350,6 +334,13 @@ generate_table <- function(dat,
     value_labels <- dat |>
       tveDataLoader::update_val_labels(value_labels) |>
       tveDataLoader::get_valLabels()
+  }
+
+  # if no weight provided (i.e. weight_var == NULL) then add a dummy weight of 1
+  # and set weight_var to "weight"
+  if(is.null(weight_var)) {
+    dat$weight <- 1
+    weight_var <- "weight"
   }
 
   # Identify variable types and flags
