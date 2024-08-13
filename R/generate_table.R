@@ -291,10 +291,27 @@ generate_table <- function(dat,
                            value_labels = NULL) {
 
   # Checks
+  dat_name <- deparse(substitute(dat))
   assertthat::assert_that(is.data.frame(dat))
   assertthat::assert_that(is.character(row_vars))
+  row_vars_not_in_dat <- row_vars[!row_vars %in% names(dat)]
+  assertthat::assert_that(
+    length(row_vars_not_in_dat) == 0,
+    msg = glue::glue("row_vars are missing from {dat_name}: {stringr::str_flatten_comma(row_vars_not_in_dat)}")
+  )
   assertthat::assert_that(is.character(col_var))
+  assertthat::assert_that(
+    col_var %in% names(dat),
+    msg = glue::glue("{col_var} not in {dat_name}")
+  )
   assertthat::assert_that(is.null(weight_var) || is.character(weight_var))
+  if(!is.null(weight_var)) {
+    assertthat::assert_that(length(weight_var) == 1, msg = "Only 1 weight variable allowed")
+    assertthat::assert_that(
+      weight_var %in% names(dat),
+      msg = glue::glue("{weight_var} not in {dat_name}")
+    )
+  }
   assertthat::assert_that(
     any(
       is.null(variable_labels),
