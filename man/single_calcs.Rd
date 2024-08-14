@@ -4,13 +4,10 @@
 \alias{single_calcs}
 \title{calculate table for single code questions}
 \usage{
-single_calcs(dat, row_vars, col_var, weight_var, variable_labels, flag_list)
+single_calcs(dat, col_var, weight_var, variable_labels, flag_list)
 }
 \arguments{
 \item{dat}{data}
-
-\item{row_vars}{Character vector containing the variables to be used as rows
-in the table.}
 
 \item{col_var}{Character string containing the variables to be used as
 columns in the output table.}
