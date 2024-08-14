@@ -398,6 +398,9 @@ generate_table <- function(dat,
     dplyr::arrange(order) |>
     dplyr::select(-order)
 
+  #make sure column names have correct capitalizstion for segmentation profiling functions
+  names(output) <- c("Variable", "Label", "Value", names(output)[-c(1:3)])
+
   # Check number of unique rows in table matches the number of row variables
   assertthat::assert_that(length(unique(output$Variable)) == length(row_vars))
 

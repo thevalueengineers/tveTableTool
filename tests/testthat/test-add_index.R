@@ -14,8 +14,8 @@ test_that("index columns are added", {
     names(temp_combined_table),
     c(
       "Variable",
-      "label",
-      "value",
+      "Label",
+      "Value",
       "Total",
       "AnotherGender/Non-binary",
       "Female",
