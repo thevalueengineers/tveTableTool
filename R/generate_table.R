@@ -76,8 +76,6 @@ identify_var_type <- function(dat,
 #' calculate table for multi code and numeric questions
 #'
 #' @param dat data
-#' @param row_vars Character vector containing the variables to be used as rows
-#' in the table.
 #' @param col_var Character string containing the variables to be used as
 #' columns in the output table.
 #' @param weight_var Character string containing the variable name of the
@@ -158,8 +156,6 @@ mean_calcs <- function(dat,
 #' calculate table for single code questions
 #'
 #' @param dat data
-#' @param row_vars Character vector containing the variables to be used as rows
-#' in the table.
 #' @param col_var Character string containing the variables to be used as
 #' columns in the output table.
 #' @param weight_var Character string containing the variable name of the
@@ -178,7 +174,6 @@ mean_calcs <- function(dat,
 #' @examples ''
 #'
 single_calcs <- function(dat,
-                         # row_vars,
                          col_var,
                          weight_var,
                          variable_labels,
