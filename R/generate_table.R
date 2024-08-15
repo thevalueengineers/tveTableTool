@@ -129,7 +129,7 @@ mean_calcs <- function(dat,
     group_number <- number_out %>%
       dplyr::group_by(name, column) %>%
       dplyr::summarise(
-        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        value = weighted.mean(value, wt = .data[[weight_var]], na.rm = TRUE),
         .groups = 'drop'
       ) %>%
       tidyr::pivot_wider(names_from = "column", values_from = "value")
@@ -137,7 +137,7 @@ mean_calcs <- function(dat,
     total_number <- number_out %>%
       dplyr::group_by(name) %>%
       dplyr::summarise(
-        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        value = weighted.mean(value, wt = .data[[weight_var]], na.rm = TRUE),
         .groups = 'drop'
       ) %>%
       dplyr::rename(Total = value)
