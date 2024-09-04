@@ -19,7 +19,7 @@ Imports:
     shiny,
     tidyr,
     tidyselect,
-    tveDataLoader
+    tveDataLoader (>= 0.1.0)
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
@@ -31,3 +31,5 @@ RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
+Remotes:  
+    thevalueengineers/tveDataLoader
