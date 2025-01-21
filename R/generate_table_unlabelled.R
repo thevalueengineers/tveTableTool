@@ -12,7 +12,7 @@
 identify_var_type_unlabs <- function(dat,
                                      row_vars) {
 
-  dat <- br_vehicle_clusters_2 |> select(all_of(row_vars))
+  dat <- dat |> select(all_of(row_vars))
 
   #flag character vars in data frame - TRUE = character
   character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
