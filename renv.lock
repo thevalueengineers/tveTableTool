@@ -204,6 +204,25 @@
       ],
       "Hash": "c1ee497a6d999947c2c224ae46799b1a"
     },
+    "bs4Dash": {
+      "Package": "bs4Dash",
+      "Version": "2.3.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "bslib",
+        "fresh",
+        "htmltools",
+        "httpuv",
+        "httr",
+        "jsonlite",
+        "lifecycle",
+        "shiny",
+        "waiter"
+      ],
+      "Hash": "3b74146479853ff3ac3d34210464f251"
+    },
     "bslib": {
       "Package": "bslib",
       "Version": "0.8.0",
@@ -581,6 +600,20 @@
         "utils"
       ],
       "Hash": "26a24dde1722321b78f10d3bf42538d6"
+    },
+    "fresh": {
+      "Package": "fresh",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "bslib",
+        "htmltools",
+        "rstudioapi",
+        "sass",
+        "shiny"
+      ],
+      "Hash": "7bdb5c90d4fe3cb14dcefbe837ce01da"
     },
     "fs": {
       "Package": "fs",
@@ -1692,6 +1725,28 @@
       ],
       "Hash": "cb2c784b454ab117b53a188097e61247"
     },
+    "tveShiny": {
+      "Package": "tveShiny",
+      "Version": "0.1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tveShiny",
+      "RemoteUsername": "thevalueengineers",
+      "RemotePkgRef": "thevalueengineers/tveShiny@dev",
+      "RemoteRef": "dev",
+      "RemoteSha": "4b34e6444d0812134b174c3e68bb6464113da70a",
+      "Requirements": [
+        "assertthat",
+        "bs4Dash",
+        "dplyr",
+        "htmltools",
+        "magrittr",
+        "shiny",
+        "usethis"
+      ],
+      "Hash": "29373890b7bef50a9ecd79e3fd9e2a28"
+    },
     "tzdb": {
       "Package": "tzdb",
       "Version": "0.4.0",
@@ -1797,6 +1852,18 @@
         "withr"
       ],
       "Hash": "390f9315bc0025be03012054103d227c"
+    },
+    "waiter": {
+      "Package": "waiter",
+      "Version": "0.2.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R6",
+        "htmltools",
+        "shiny"
+      ],
+      "Hash": "93e6b6c8ae3f81d4be77a0dc74e5cf5e"
     },
     "waldo": {
       "Package": "waldo",
