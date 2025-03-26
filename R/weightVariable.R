@@ -15,10 +15,10 @@
 #'
 #' @name weightVariable
 weightVariable_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    uiOutput(ns("inc_weight")),
-    uiOutput(ns("weight_variable"))
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::uiOutput(ns("inc_weight")),
+    shiny::uiOutput(ns("weight_variable"))
   )
 }
 
@@ -32,13 +32,13 @@ weightVariable_ui <- function(id) {
 #'
 #' @export
 weightVariable_server <- function(id, varLabels) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
 
-      output$inc_weight <- renderUI({
-        req(varLabels)
+      output$inc_weight <- shiny::renderUI({
+        shiny::req(varLabels)
         shinyWidgets::materialSwitch(
           inputId = ns("inc_weight2"),
           label = "Include weighting variable",
@@ -47,10 +47,11 @@ weightVariable_server <- function(id, varLabels) {
         )
       })
 
-      output$weight_variable <- renderUI({
-        req(input$inc_weight2)
+      output$weight_variable <- shiny::renderUI({
+        shiny::req(input$inc_weight2)
         if(input$inc_weight2 == TRUE) {
-          choices <- slice(varLabels(), -1) %>% pull(label)
+          choices <- dplyr::slice(varLabels(), -1) %>%
+            dplyr::pull(label)
 
           shinyWidgets::pickerInput(
             ns("weight_var"),
@@ -64,11 +65,11 @@ weightVariable_server <- function(id, varLabels) {
       })
 
       return(
-        reactive({
+        shiny::reactive({
 
           if(input$inc_weight2 == TRUE) {
-            weight <- filter(varLabels(), label %in% input$weight_var) %>%
-              pull(variable)
+            weight <- dplyr::filter(varLabels(), label %in% input$weight_var) %>%
+              dplyr::pull(variable)
           } else {
             weight <- "no_weighting"
           }

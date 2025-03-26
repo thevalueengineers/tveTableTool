@@ -110,7 +110,7 @@ ui <- fluidPage(
 # for authentication
 ui_func <- function(req) {
     if (dev == FALSE){
-        opts <- parseQueryString(req$QUERY_STRING)
+        opts <- parseQueryString(shiny::req$QUERY_STRING)
         if(is.null(opts$code))
         {
             auth_uri <- build_authorization_uri(resource, tenant, app, redirect_uri=redirect, version=2)
@@ -157,7 +157,7 @@ server <- function(input, output, session) {
     output$filter_data <- shiny::renderDataTable({filters()$filter_dat})
 
     output$include_filters <- renderText({
-        req(filters())
+        shiny::req(filters())
         filters()$inc_filters
     })
 
@@ -167,21 +167,21 @@ server <- function(input, output, session) {
     col_var <- colChoice_server("col_vars", selection_vars, variable_labels)
 
     output$selectionVars <- renderText({
-        req(selection_vars())
+        shiny::req(selection_vars())
         selection_vars()
     })
     output$rowVars <- renderText({
-        req(row_var())
+        shiny::req(row_var())
         row_var()
     })
     output$colVars <- renderText({
-        req(col_var())
+        shiny::req(col_var())
         col_var()
     })
 
     # filters ----
     output$resp_filters <- renderUI({
-        req(filters()$inc_filters)
+        shiny::req(filters()$inc_filters)
         if (filters()$inc_filters == TRUE) {
             tagList(
                 tags$strong("Respondent filters"),

@@ -7,10 +7,10 @@
 add_index(tab)
 }
 \arguments{
-\item{tab}{Table generated from \code\link[tveTableTool]{generate_table}.}
+\item{tab}{Table generated from \code{\link{generate_table}} .}
 }
 \value{
-Tibble as per \code\link[tveTableTool]{generate_table} with
+Tibble as per \code{\link{generate_table}}  with
 additional columns for indexes
 }
 \description{

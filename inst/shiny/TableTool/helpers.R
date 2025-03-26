@@ -5,7 +5,7 @@
 #     id,
 #     function(input, output, session) {
 #       reactive({
-#         req(data())
+#         shiny::req(data())
 #         select(data(), where(is.numeric)) %>%
 #           # add no_weighting variable
 #           mutate(no_weighting = 1)
@@ -19,7 +19,7 @@
 #     id,
 #     function(input, output, session) {
 #       reactive({
-#         req(dat())
+#         shiny::req(dat())
 #         vars_with_labels <- tveDataLoader::get_varLabels(dat())
 #         vars_without_labels <- names(dat())[!names(dat()) %in% vars_with_labels$variable]
 #
@@ -53,7 +53,7 @@
 #       ns <- session$ns
 #
 #       output$inc_weight <- renderUI({
-#         req(varLabels)
+#         shiny::req(varLabels)
 #         shinyWidgets::materialSwitch(
 #           inputId = ns("inc_weight2"),
 #           label = "Include weighting variable",
@@ -63,7 +63,7 @@
 #       })
 #
 #       output$weight_variable <- renderUI({
-#         req(input$inc_weight2)
+#         shiny::req(input$inc_weight2)
 #         if(input$inc_weight2 == TRUE) {
 #           choices <- slice(varLabels(), -1) %>% pull(label)
 #
@@ -121,7 +121,7 @@
 #       })
 #
 #       output$filter_variables <- renderUI({
-#         req(input$inc_filters2)
+#         shiny::req(input$inc_filters2)
 #
 #         if(input$inc_filters2 == TRUE) {
 #           choices <- slice(varLabels(), -1) %>% pull(label)
@@ -146,8 +146,8 @@
 #       })
 #
 #       filter_dat <- reactive({
-#         # req(tab_data())
-#         # req(filter_vars())
+#         # shiny::req(tab_data())
+#         # shiny::req(filter_vars())
 #         mutate(
 #           tab_data(),
 #           across(all_of(as.character(filter_vars())), haven::as_factor)
@@ -156,8 +156,8 @@
 #
 #       return(
 #         reactive({
-#           # req(input$inc_filters2)
-#           # req(filter_vars())
+#           # shiny::req(input$inc_filters2)
+#           # shiny::req(filter_vars())
 #
 #           list(
 #             inc_filters = input$inc_filters2,
@@ -179,8 +179,8 @@
 #     function(input, output, session) {
 #       selection_vars <- reactive({
 #
-#         req(varLabels())
-#         req(weightVar())
+#         shiny::req(varLabels())
+#         shiny::req(weightVar())
 #
 #         filter(varLabels(), variable != weightVar()) %>%
 #           slice(-1) %>%
@@ -206,7 +206,7 @@
 #
 #       output$row_choice <- renderUI({
 #
-#         req(selection_vars())
+#         shiny::req(selection_vars())
 #
 #         pickerInput(
 #           ns("row_vars"),
@@ -245,7 +245,7 @@
 #
 #       output$col_choice <- renderUI({
 #
-#         req(selection_vars())
+#         shiny::req(selection_vars())
 #
 #         pickerInput(
 #           ns("column_variable"),
@@ -302,7 +302,7 @@
 #       ns <- session$ns
 #
 #       expr <- reactive({
-#         # req(filtering_exp())
+#         # shiny::req(filtering_exp())
 #         expr <- toString(deparse(filtering_exp()))
 #         expr <- ifelse(is.null(filtering_exp()), "Total sample", expr)
 #
@@ -335,8 +335,8 @@
 #
 #
 #       tab <- reactive({
-#         req(row_var())
-#         req(col_var())
+#         shiny::req(row_var())
+#         shiny::req(col_var())
 #
 #
 #
@@ -365,7 +365,7 @@
 #       })
 #
 #       output$out_tab <- DT::renderDataTable({
-#         req(col_var())
+#         shiny::req(col_var())
 #
 #
 #         col_label <- filter(variable_labels(), variable == col_var()) %>%
