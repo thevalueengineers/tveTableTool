@@ -91,11 +91,11 @@ ui <- fluidPage(
             # "Column vars: ", verbatimTextOutput("colVars"),
             # "Variable labels: ", shiny::dataTableOutput("varLabels"),
             # "Filter data: ", shiny::dataTableOutput("filter_data"),
-            "dat: ", shiny::dataTableOutput("dat"),
+            "dat: ", DT::DTOutput("dat"),
             "Expr: ", verbatimTextOutput("expr"),
             "Meta: ", verbatimTextOutput("meta"),
             # "Output stat: ", verbatimTextOutput("output_stat"),
-            "tab: ", shiny::dataTableOutput("tab"),
+            "tab: ", DT::DTOutput("tab"),
             # "out_dat: ", shiny::dataTableOutput("out_dat"),
             # "out_row_var: ", verbatimTextOutput("out_row_var"),
             # "out_col_var: ", verbatimTextOutput("out_col_var"),
@@ -141,7 +141,7 @@ server <- function(input, output, session) {
     ## variable labels ----
     # variable_labels <- reactive({getVariableLabels(tab_data())})
     variable_labels <- getVariableLabels("id2", tab_data, "no_weighting")
-    output$varLabels <- shiny::renderDataTable({head(variable_labels())})
+    output$varLabels <- DT::renderDT({head(variable_labels())})
 
 
     # weight variable selection ----
@@ -154,7 +154,7 @@ server <- function(input, output, session) {
 
     output$filter_var_names <- renderText({names(filters()$filter_vars)})
     output$filter_var_char <- renderText({as.character(filters()$filter_vars)})
-    output$filter_data <- shiny::renderDataTable({filters()$filter_dat})
+    output$filter_data <- DT::renderDT({filters()$filter_dat})
 
     output$include_filters <- renderText({
         req(filters())
@@ -214,8 +214,9 @@ server <- function(input, output, session) {
         dat
     })
 
-    output$dat <- shiny::renderDataTable({head(dat())})
+    output$dat <- DT::renderDT({head(dat())})
 
+    debugonce(generate_table)
     outTable <- outputTab_server("out",
                                  dat = dat,
                                  filtering_exp = filtering_exp,
@@ -228,12 +229,12 @@ server <- function(input, output, session) {
     output$expr = renderText({outTable()$expr})
     output$meta = renderText({outTable()$meta})
     output$output_stat <- renderText({outTable()$output_stat})
-    output$tab <- shiny::renderDataTable({head(outTable()$tab)})
-    output$out_dat <- shiny::renderDataTable({head(outTable()$dat)})
+    output$tab <- DT::renderDT({head(outTable()$tab)})
+    output$out_dat <- DT::renderDT({head(outTable()$dat)})
     output$out_row_var <- renderText({outTable()$row_var})
     output$out_col_var <- renderText({outTable()$col_var})
     output$out_weight_var <- renderText({outTable()$weight_var})
-    output$out_variable_labels <- shiny::renderDataTable({head(outTable()$variable_labels)})
+    output$out_variable_labels <- DT::renderDT({head(outTable()$variable_labels)})
 
 
 

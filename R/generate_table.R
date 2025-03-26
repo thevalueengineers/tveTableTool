@@ -37,7 +37,9 @@ identify_var_type <- function(dat,
         }
     ) |>
     dplyr::bind_rows(.id = "variable") |>
-    tidyr::pivot_longer(everything(), names_to = "variable", values_to = "type")
+    tidyr::pivot_longer(tidyselect::everything(),
+                        names_to = "variable",
+                        values_to = "type")
 
   #flag character vars in data frame - TRUE = character
   character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
@@ -117,7 +119,7 @@ mean_calcs <- function(dat,
     # Add explicit NA level
     dplyr::mutate(
       dplyr::across(
-        -dplyr::all_of(weight_var),
+        -tidyselect::all_of(weight_var),
         ~ dplyr::if_else(is.na(.), "0", as.character(.))  # Use a formula function with ~
       )
     )|>
@@ -147,7 +149,7 @@ mean_calcs <- function(dat,
     dplyr::left_join(group_number, by = "name") %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
     dplyr::mutate(value = "mean") %>%
-    dplyr::select(Variable = name, label, value, dplyr::everything())
+    dplyr::select(Variable = name, label, value, tidyselect::everything())
 
   return(combined_number)
 
@@ -183,7 +185,7 @@ single_calcs <- function(dat,
   prep <- dat %>%
     # Add a specific column variable in case col_var is also selected as a row variable
     dplyr::mutate(column = .data[[col_var]]) %>%
-    dplyr::select(dplyr::all_of(c(flag_list$single_flag, weight_var, "column"))) %>%
+    dplyr::select(tidyselect::all_of(c(flag_list$single_flag, weight_var, "column"))) %>%
     # If labelled, convert to ordered factor
     dplyr::mutate(
       dplyr::across(

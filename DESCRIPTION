@@ -1,7 +1,7 @@
 Type: Package
 Package: tveTableTool
 Title: What the Package Does (one line, title case)
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "first name",
            family = "last name",
@@ -20,13 +20,14 @@ Imports:
     tidyr,
     tidyselect,
     tveDataLoader,
-    rlang,
     purrr,
     glue,
     stringr,
     DT,
     htmltools,
-    shinyWidgets
+    shinyWidgets,
+    stats,
+    tibble
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
@@ -38,5 +39,5 @@ RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
-Remotes:  
+Remotes: 
     thevalueengineers/tveDataLoader

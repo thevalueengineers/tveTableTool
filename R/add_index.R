@@ -3,9 +3,9 @@
 #' Index is calculated by dividing each column by the Total column and
 #' multiplying by 100.
 #'
-#' @param tab Table generated from \code\link[tveTableTool]{generate_table}.
+#' @param tab Table generated from \code{\link{generate_table}} .
 #'
-#' @return Tibble as per \code\link[tveTableTool]{generate_table} with
+#' @return Tibble as per \code{\link{generate_table}}  with
 #' additional columns for indexes
 #'
 #' @export

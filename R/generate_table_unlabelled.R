@@ -12,7 +12,8 @@
 identify_var_type_unlabs <- function(dat,
                                      row_vars) {
 
-  dat <- dat |> select(all_of(row_vars))
+  dat <- dat |>
+    dplyr::select(tidyselect::all_of(row_vars))
 
   #flag character vars in data frame - TRUE = character
   character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
@@ -102,7 +103,7 @@ mean_calcs_unlabs <- function(dat,
   combined_number <- total_number %>%
     dplyr::left_join(group_number, by = "name") %>%
     dplyr::mutate(value = "mean") %>%
-    dplyr::select(Variable = name, value, dplyr::everything())
+    dplyr::select(Variable = name, value, tidyselect::everything())
 
   return(combined_number)
 
@@ -135,7 +136,7 @@ single_calcs_unlabs <- function(dat,
   prep <- dat %>%
     # Add a specific column variable in case col_var is also selected as a row variable
     dplyr::mutate(column = .data[[col_var]]) %>%
-    dplyr::select(dplyr::all_of(c(flag_list$category_flag, weight_var, "column"))) %>%
+    dplyr::select(tidyselect::all_of(c(flag_list$category_flag, weight_var, "column"))) %>%
     # Convert character or factor columns to ordered factors, excluding the weight variable
     dplyr::mutate(
       dplyr::across(

@@ -16,8 +16,8 @@ resource <- c(
 
 # set this to the site URL of your app once it is deployed
 # this must also be the redirect for your registered app in Azure Active Directory
-redirect <- "https://thevalueengineers.shinyapps.io/TableTool/"
-# redirect <- "http://localhost:8100"
+# redirect <- "https://thevalueengineers.shinyapps.io/TableTool/"
+redirect <- "http://localhost:8100"
 
 port <- httr::parse_url(redirect)$port
 options(shiny.port=if(is.null(port)) 80 else as.numeric(port))

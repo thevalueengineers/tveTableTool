@@ -15,14 +15,14 @@
 #' @export
 prepData <- function(id, data) {
 
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
-      reactive({
-        req(data())
-        select(data(), where(is.numeric)) %>%
+      shiny::reactive({
+        shiny::req(data())
+        dplyr::select(data(), tidyselect::where(is.numeric)) %>%
           # add no_weighting variable
-          mutate(no_weighting = 1)
+          dplyr::mutate(no_weighting = 1)
       })
     }
   )

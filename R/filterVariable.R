@@ -21,10 +21,10 @@
 #'
 #' @name filterVariable
 filterVariable_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    uiOutput(ns("inc_filters")),
-    uiOutput(ns("filter_variables"))
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::uiOutput(ns("inc_filters")),
+    shiny::uiOutput(ns("filter_variables"))
   )
 }
 
@@ -38,12 +38,12 @@ filterVariable_ui <- function(id) {
 #'
 #' @rdname filterVariable
 filterVariable_server <- function(id, varLabels, tab_data) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
 
-      output$inc_filters <- renderUI({
+      output$inc_filters <- shiny::renderUI({
         shinyWidgets::materialSwitch(
           inputId = ns("inc_filters2"),
           label = "Include respondent filters",
@@ -52,11 +52,12 @@ filterVariable_server <- function(id, varLabels, tab_data) {
         )
       })
 
-      output$filter_variables <- renderUI({
-        req(input$inc_filters2)
+      output$filter_variables <- shiny::renderUI({
+        shiny::req(input$inc_filters2)
 
         if(input$inc_filters2 == TRUE) {
-          choices <- slice(varLabels(), -1) %>% pull(label)
+          choices <- dplyr::slice(varLabels(), -1) %>%
+            dplyr::pull(label)
 
           shinyWidgets::pickerInput(
             ns("filter_vars"),
@@ -70,22 +71,22 @@ filterVariable_server <- function(id, varLabels, tab_data) {
         }
       })
 
-      filter_vars <- reactive({
+      filter_vars <- shiny::reactive({
         setNames(
           varLabels()[varLabels()$label %in% input$filter_vars, ]$variable,
           varLabels()[varLabels()$label %in% input$filter_vars, ]$label
         )
       })
 
-      filter_dat <- reactive({
-        mutate(
+      filter_dat <- shiny::reactive({
+        dplyr::mutate(
           tab_data(),
-          across(all_of(as.character(filter_vars())), haven::as_factor)
+          dplyr::across(tidyselect::all_of(as.character(filter_vars())), haven::as_factor)
         )
       })
 
       return(
-        reactive({
+        shiny::reactive({
 
           list(
             inc_filters = input$inc_filters2,

@@ -32,17 +32,17 @@
 #'
 #' @name selectionVars
 selectionVars_server <- function(id, varLabels, exclude) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
-      selection_vars <- reactive({
+      selection_vars <- shiny::reactive({
 
-        req(varLabels())
-        req(exclude)
+        shiny::req(varLabels())
+        shiny::req(exclude)
 
-        filter(varLabels(), !variable %in% exclude) %>%
-          slice(-1) %>%
-          pull(label)
+        dplyr::filter(varLabels(), !variable %in% exclude) %>%
+          dplyr::slice(-1) %>%
+          dplyr::pull(label)
       })
       return(selection_vars)
     }
@@ -52,8 +52,8 @@ selectionVars_server <- function(id, varLabels, exclude) {
 #' @export
 #' @rdname selectionVars
 rowChoice_ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("row_choice"))
+  ns <- shiny::NS(id)
+  shiny::uiOutput(ns("row_choice"))
 }
 
 #' @param selection_vars Reactive character vector of the variable labels from
@@ -62,16 +62,16 @@ rowChoice_ui <- function(id) {
 #' @export
 #' @rdname selectionVars
 rowChoice_server <- function(id, selection_vars, varLabels) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
 
-      output$row_choice <- renderUI({
+      output$row_choice <- shiny::renderUI({
 
-        req(selection_vars())
+        shiny::req(selection_vars())
 
-        pickerInput(
+        shinyWidgets::pickerInput(
           ns("row_vars"),
           label = "Row variables",
           choices = selection_vars(),
@@ -83,9 +83,9 @@ rowChoice_server <- function(id, selection_vars, varLabels) {
         )
       })
 
-      row_variables <- reactive({
-        filter(varLabels(), label %in% input$row_vars) %>%
-          pull(variable)
+      row_variables <- shiny::reactive({
+        dplyr::filter(varLabels(), label %in% input$row_vars) %>%
+          dplyr::pull(variable)
       })
 
       return(row_variables)
@@ -97,23 +97,23 @@ rowChoice_server <- function(id, selection_vars, varLabels) {
 #' @export
 #' @rdname selectionVars
 colChoice_ui <- function(id) {
-  ns <- NS(id)
-  uiOutput(ns("col_choice"))
+  ns <- shiny::NS(id)
+  shiny::uiOutput(ns("col_choice"))
 }
 
 #' @export
 #' @rdname selectionVars
 colChoice_server <- function(id, selection_vars, varLabels) {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
 
-      output$col_choice <- renderUI({
+      output$col_choice <- shiny::renderUI({
 
-        req(selection_vars())
+        shiny::req(selection_vars())
 
-        pickerInput(
+        shinyWidgets::pickerInput(
           ns("column_variable"),
           label = "Column Variables",
           choices = selection_vars(),
@@ -124,9 +124,9 @@ colChoice_server <- function(id, selection_vars, varLabels) {
         )
       })
 
-      column_variables <- reactive({
-        filter(varLabels(), label %in% input$column_variable) %>%
-          pull(variable)
+      column_variables <- shiny::reactive({
+        dplyr::filter(varLabels(), label %in% input$column_variable) %>%
+          dplyr::pull(variable)
       })
 
       return(column_variables)

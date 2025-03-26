@@ -190,8 +190,8 @@ setup_summary_vars <- function() {
 row_vars <- setup_summary_vars()
 col_var <- "s5"
 weight_var <- "no_weight"
-value_labels <- dat |> get_valLabels()
-variable_labels <- dat |> get_varLabels()
+value_labels <- dat |> tveDataLoader::get_valLabels()
+variable_labels <- dat |> tveDataLoader::get_varLabels()
 
 generate_table_new(dat,row_vars,col_var,weight_var,variable_labels,value_labels)
 

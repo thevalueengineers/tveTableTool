@@ -10,24 +10,24 @@
 #'
 #' @export
 getVariableLabels <- function(id, dat, exclude = "no_weighting") {
-  moduleServer(
+  shiny::moduleServer(
     id,
     function(input, output, session) {
-      reactive({
-        req(dat())
+      shiny::reactive({
+        shiny::req(dat())
         vars_with_labels <- tveDataLoader::get_varLabels(dat())
         vars_without_labels <- names(dat())[!names(dat()) %in% vars_with_labels$variable]
 
         # add vars without labels to variable_labels
-        bind_rows(
+        dplyr::bind_rows(
           vars_with_labels,
-          tibble(
+          tibble::tibble(
             variable = vars_without_labels,
             label = vars_without_labels
           )
         ) %>%
           # make sure no_weighting var isn't included
-          filter(!variable %in% exclude)
+          dplyr::filter(!variable %in% exclude)
       })
     }
   )
