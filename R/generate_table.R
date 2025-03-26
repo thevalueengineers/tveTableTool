@@ -37,7 +37,9 @@ identify_var_type <- function(dat,
         }
     ) |>
     dplyr::bind_rows(.id = "variable") |>
-    tidyr::pivot_longer(everything(), names_to = "variable", values_to = "type")
+    tidyr::pivot_longer(tidyselect::everything(),
+                        names_to = "variable",
+                        values_to = "type")
 
   #flag character vars in data frame - TRUE = character
   character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
@@ -147,7 +149,7 @@ mean_calcs <- function(dat,
     dplyr::left_join(group_number, by = "name") %>%
     dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
     dplyr::mutate(value = "mean") %>%
-    dplyr::select(Variable = name, label, value, dplyr::everything())
+    dplyr::select(Variable = name, label, value, tidyselect::everything())
 
   return(combined_number)
 

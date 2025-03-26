@@ -20,14 +20,14 @@ Imports:
     tidyr,
     tidyselect,
     tveDataLoader,
-    rlang,
     purrr,
     glue,
     stringr,
     DT,
     htmltools,
     shinyWidgets,
-    stats
+    stats,
+    tibble
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,

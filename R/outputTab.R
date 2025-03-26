@@ -12,7 +12,7 @@ outputTab_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
-    radioGroupButtons(
+    shinyWidgets::radioGroupButtons(
       inputId = ns("show_percents"),
       label = "Show percents or counts",
       choices = c("Column Percentages",
@@ -111,44 +111,45 @@ outputTab_server <- function(id,
         )
 
         # fix order of table
-        tab <- inner_join(
-          get_valLabels(dat()) %>%
+        tab <- dplyr::inner_join(
+          tveDataLoader::get_valLabels(dat()) %>%
             dplyr::filter(variable %in% row_var()) %>%
             dplyr::select(-value),
           tab,
           by = c("variable" = "Variable", "value label" = "Value")
         ) %>%
-          dplyr::select(variable, Label, `value label`, everything())
+          dplyr::select(variable, Label, `value label`, tidyselect::everything())
 
         tab
 
 
       })
 
-      output$out_tab <- DT::renderDataTable({
+      output$out_tab <- DT::renderDT({
         shiny::req(col_var())
 
 
         col_label <- dplyr::filter(variable_labels(), variable == col_var()) %>%
-          pull(label)
+          dplyr::pull(label)
 
-        sketch = htmltools::withTags(table(
-          class = 'display',
-          thead(
-            tr(
-              th(rowspan = 2, 'Variable'),
-              th(rowspan = 2, 'Label'),
-              th(rowspan = 2, 'Value'),
-              th(rowspan = 2, 'Total'),
-              th(colspan = ncol(tab()) - 4, col_label)
-            ),
-            tr(
-              lapply(names(tab())[-c(1:4)], th)
+        sketch = htmltools::withTags(
+          table(
+            class = 'display',
+            thead(
+              tr(
+                th(rowspan = 2, 'Variable'),
+                th(rowspan = 2, 'Label'),
+                th(rowspan = 2, 'Value'),
+                th(rowspan = 2, 'Total'),
+                th(colspan = ncol(tab()) - 4, col_label)
+              ),
+              tr(
+                lapply(names(tab())[-c(1:4)], th)
+              )
             )
-          )
-        ))
+          ))
 
-        out <- datatable(
+        out <- DT::datatable(
           tab(),
           container = sketch,
           rownames = FALSE,
@@ -172,7 +173,7 @@ outputTab_server <- function(id,
 
         if(stat() %in% c("columns", "rows")) {
           out <- out %>%
-            formatPercentage(4:ncol(tab()), 2)
+            DT::formatPercentage(4:ncol(tab()), 2)
         }
         out
 

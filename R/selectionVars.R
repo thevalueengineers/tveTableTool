@@ -85,7 +85,7 @@ rowChoice_server <- function(id, selection_vars, varLabels) {
 
       row_variables <- shiny::reactive({
         dplyr::filter(varLabels(), label %in% input$row_vars) %>%
-          dplyr:: pull(variable)
+          dplyr::pull(variable)
       })
 
       return(row_variables)

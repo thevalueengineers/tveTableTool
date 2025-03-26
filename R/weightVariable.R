@@ -67,7 +67,7 @@ weightVariable_server <- function(id, varLabels) {
       return(
         shiny::reactive({
 
-          if(input$inc_weight2 == TRUE) {
+          if(isTRUE(input$inc_weight2)) {
             weight <- dplyr::filter(varLabels(), label %in% input$weight_var) %>%
               dplyr::pull(variable)
           } else {

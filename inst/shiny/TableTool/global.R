@@ -10,8 +10,8 @@ if(secret == "") secret <- NULL
 # if your app doesn't use any Azure resources (you only want to do authentication),
 # set the resource to "openid" only
 resource <- c(
-  "https://management.azure.com/.default"#,
-  # "openid"
+  # "https://management.azure.com/.default",
+  "openid"
 )
 
 # set this to the site URL of your app once it is deployed

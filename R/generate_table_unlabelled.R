@@ -103,7 +103,7 @@ mean_calcs_unlabs <- function(dat,
   combined_number <- total_number %>%
     dplyr::left_join(group_number, by = "name") %>%
     dplyr::mutate(value = "mean") %>%
-    dplyr::select(Variable = name, value, dplyr::everything())
+    dplyr::select(Variable = name, value, tidyselect::everything())
 
   return(combined_number)
 

@@ -19,9 +19,9 @@ getVariableLabels <- function(id, dat, exclude = "no_weighting") {
         vars_without_labels <- names(dat())[!names(dat()) %in% vars_with_labels$variable]
 
         # add vars without labels to variable_labels
-        bind_rows(
+        dplyr::bind_rows(
           vars_with_labels,
-          tibble(
+          tibble::tibble(
             variable = vars_without_labels,
             label = vars_without_labels
           )
