@@ -24,8 +24,6 @@ Imports:
     purrr,
     glue,
     stringr,
-    rlang,
-    shiny,
     DT,
     htmltools,
     shinyWidgets
@@ -40,3 +38,5 @@ RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
+Remotes:  
+    thevalueengineers/tveDataLoader
