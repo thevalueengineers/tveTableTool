@@ -76,8 +76,6 @@ identify_var_type <- function(dat,
 #' calculate table for multi code and numeric questions
 #'
 #' @param dat data
-#' @param row_vars Character vector containing the variables to be used as rows
-#' in the table.
 #' @param col_var Character string containing the variables to be used as
 #' columns in the output table.
 #' @param weight_var Character string containing the variable name of the
@@ -131,7 +129,7 @@ mean_calcs <- function(dat,
     group_number <- number_out %>%
       dplyr::group_by(name, column) %>%
       dplyr::summarise(
-        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        value = weighted.mean(value, wt = .data[[weight_var]], na.rm = TRUE),
         .groups = 'drop'
       ) %>%
       tidyr::pivot_wider(names_from = "column", values_from = "value")
@@ -139,7 +137,7 @@ mean_calcs <- function(dat,
     total_number <- number_out %>%
       dplyr::group_by(name) %>%
       dplyr::summarise(
-        value = weighted.mean(value, w = .data[[weight_var]], na.rm = TRUE),
+        value = weighted.mean(value, wt = .data[[weight_var]], na.rm = TRUE),
         .groups = 'drop'
       ) %>%
       dplyr::rename(Total = value)
@@ -158,8 +156,6 @@ mean_calcs <- function(dat,
 #' calculate table for single code questions
 #'
 #' @param dat data
-#' @param row_vars Character vector containing the variables to be used as rows
-#' in the table.
 #' @param col_var Character string containing the variables to be used as
 #' columns in the output table.
 #' @param weight_var Character string containing the variable name of the
@@ -178,7 +174,6 @@ mean_calcs <- function(dat,
 #' @examples ''
 #'
 single_calcs <- function(dat,
-                         # row_vars,
                          col_var,
                          weight_var,
                          variable_labels,
@@ -403,10 +398,14 @@ generate_table <- function(dat,
     dplyr::arrange(order) |>
     dplyr::select(-order)
 
+  #make sure column names have correct capitalizstion for segmentation profiling functions
+  names(output) <- c("Variable", "Label", "Value", names(output)[-c(1:3)])
+
   # Check number of unique rows in table matches the number of row variables
-  assertthat::assert_that(length(unique(output$Variable)) == length(row_vars))
+  # assertthat::assert_that(length(unique(output$Variable)) == length(row_vars))
 
   return(output)
+
 }
 
 

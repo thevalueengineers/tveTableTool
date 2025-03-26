@@ -23,7 +23,12 @@ Imports:
     rlang,
     purrr,
     glue,
-    stringr
+    stringr,
+    rlang,
+    shiny,
+    DT,
+    htmltools,
+    shinyWidgets
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
