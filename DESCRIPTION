@@ -1,7 +1,7 @@
 Type: Package
 Package: tveTableTool
 Title: What the Package Does (one line, title case)
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "first name",
            family = "last name",
