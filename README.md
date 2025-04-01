@@ -10,7 +10,7 @@
 
 The goal of tveTableTool is to provide flexible and powerful tools for
 creating cross-tabulation tables from survey data. It handles both
-labeled and unlabeled data, supports weighting, and provides various
+labelled and unlabelled data, supports weighting, and provides various
 formatting options for analyzing and presenting survey results.
 
 ## Features
@@ -22,7 +22,7 @@ formatting options for analyzing and presenting survey results.
 - Apply weighting to calculations
 - Calculate percentages (column or row) or display raw counts
 - Add index values to tables
-- Handle both labeled and unlabeled data
+- Handle both labelled and unlabelled data
 - Automatic detection of variable types
 
 ## Installation
@@ -69,13 +69,13 @@ indexed_table <- add_index(table)
 head(indexed_table)
 ```
 
-### Working with Unlabeled Data
+### Working with unlabelled Data
 
-For data without variable labels, use the unlabeled version of the
+For data without variable labels, use the unlabelled version of the
 function:
 
 ``` r
-# Generate a table from unlabeled data
+# Generate a table from unlabelled data
 unlabeled_table <- generate_table_unlabs(
   dat = my_unlabeled_data,
   row_vars = c("gender", "age"),
