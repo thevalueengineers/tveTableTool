@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/thevalueengineers/tveTableTool/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thevalueengineers/tveTableTool/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/gh/thevalueengineers/tveTableTool/graph/badge.svg?token=NOH2EZFRH6)](https://codecov.io/gh/thevalueengineers/tveTableTool)
 <!-- badges: end -->
 
 The goal of tveTableTool is to provide flexible and powerful tools for
