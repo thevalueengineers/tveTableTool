@@ -1,14 +1,16 @@
 Type: Package
 Package: tveTableTool
-Title: What the Package Does (one line, title case)
+Title: DTAG Analytics Cross-tabulation Services
 Version: 1.0.0
 Authors@R: 
-    person(given = "first name",
-           family = "last name",
+    person(given = "Juan",
+           family = "Hernandez",
            role = c("aut", "cre"),
            email = "email@email.com")
-Description: What the package does (one paragraph).
-License: GPL-3
+Description: This package provides all functionality to deliver cross-tabulation 
+    as per DTAG Analytics standards. It includes all tabulation functions, configurations,
+    and a support Shiny application for interactive use of these.
+License: file LICENSE
 Imports: 
     assertthat,
     dplyr,
