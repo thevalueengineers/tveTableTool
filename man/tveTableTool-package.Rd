@@ -4,12 +4,12 @@
 \name{tveTableTool-package}
 \alias{tveTableTool}
 \alias{tveTableTool-package}
-\title{tveTableTool: What the Package Does (one line, title case)}
+\title{tveTableTool: DTAG Analytics Cross-tabulation Services}
 \description{
-What the package does (one paragraph).
+This package provides all functionality to deliver cross-tabulation as per DTAG Analytics standards. It includes all tabulation functions, configurations, and a support Shiny application for interactive use of these.
 }
 \author{
-\strong{Maintainer}: first name last name \email{email@email.com}
+\strong{Maintainer}: Juan Hernandez \email{email@email.com}
 
 }
 \keyword{internal}
