@@ -29,17 +29,19 @@ Imports:
     htmltools,
     shinyWidgets,
     stats,
-    tibble
+    tibble,
+    data.table
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
-    whisker
+    whisker,
+    here
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5)
 Remotes: 
     thevalueengineers/tveDataLoader
