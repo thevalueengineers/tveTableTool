@@ -17,7 +17,9 @@ test_sav <- tibble::tibble(
     sample(1:4, 100, replace = TRUE),
     labels = c(
       "a" = 1,
-      "b" = 2
+      "b" = 2,
+      "c" = 3,
+      "d" = 4
     ),
     label = "v2 label"
   ),
