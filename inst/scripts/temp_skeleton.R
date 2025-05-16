@@ -12,7 +12,7 @@ create_tabulations(
   loaded_data = loaded_data,
   var_labels = var_labels,
   val_labels = val_labels,
-  row_vars = row_vars,
+  row_vars = 'foo',
   col_var = "lab_var2",
   weight_var = NULL
 )

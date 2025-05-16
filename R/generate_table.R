@@ -607,10 +607,14 @@ calculate_freqs <- function(input_data,
                       value.var = c('prop')) |>
     data.table::merge.data.table(var_labels,
                                  by.x = 'row_variable',
-                                 by.y = 'var_name')
+                                 by.y = 'var_name') |>
+    data.table::merge.data.table(temp_val_labels,
+                                 by.x = c('row_variable', 'row_level'),
+                                 by.y = c('var_name', 'val_value')) |>
+    _[, 'row_level' := NULL]
 
   data.table::setnames(output_colprops,
-                       c('row_variable', 'var_label', 'row_level', 'total'),
+                       c('row_variable', 'var_label', 'val_label', 'total'),
                        c('Variable', 'Label', 'Value', 'Total'))
 
   data.table::setcolorder(output_colprops,
@@ -621,10 +625,14 @@ calculate_freqs <- function(input_data,
                       value.var = c('n')) |>
     data.table::merge.data.table(var_labels,
                                  by.x = 'row_variable',
-                                 by.y = 'var_name')
+                                 by.y = 'var_name')|>
+    data.table::merge.data.table(temp_val_labels,
+                                 by.x = c('row_variable', 'row_level'),
+                                 by.y = c('var_name', 'val_value')) |>
+    _[, 'row_level' := NULL]
 
   data.table::setnames(output_coln,
-                       c('row_variable', 'var_label', 'row_level', 'total'),
+                       c('row_variable', 'var_label', 'val_label', 'total'),
                        c('Variable', 'Label', 'Value', 'Total'))
 
   data.table::setcolorder(output_coln,
