@@ -410,6 +410,10 @@ generate_table <- function(dat,
 
 }
 
+
+#' Classify variables by type
+#'
+#' @export
 classify_variables <- function(loaded_data,
                                val_labels,
                                no_val_labels = NULL,
@@ -444,6 +448,9 @@ classify_variables <- function(loaded_data,
 
 }
 
+#' Calculate weighted means
+#'
+#' @export
 calculate_means <- function(input_data,
                             col_var,
                             respid_var,
@@ -518,6 +525,9 @@ calculate_means <- function(input_data,
 
 }
 
+#' Calculate weighted frequencies and proportions
+#'
+#' @export
 calculate_freqs <- function(input_data,
                             col_var,
                             respid_var,
@@ -625,7 +635,9 @@ calculate_freqs <- function(input_data,
 
 }
 
-
+#' Create all tabulations
+#'
+#' @export
 create_tabulations <- function(loaded_data,
                                var_labels,
                                val_labels,
