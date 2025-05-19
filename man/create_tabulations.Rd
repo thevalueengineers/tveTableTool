@@ -9,6 +9,7 @@ create_tabulations(
   var_labels,
   val_labels,
   no_val_labels = NULL,
+  binary_labels = c(No = 0, Yes = 1),
   respid_var = "respid",
   col_var = NULL,
   weight_var = NULL

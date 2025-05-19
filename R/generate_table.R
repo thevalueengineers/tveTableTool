@@ -417,7 +417,7 @@ generate_table <- function(dat,
 classify_variables <- function(loaded_data,
                                val_labels,
                                no_val_labels = NULL,
-                               binary_labels = c(No = 0, Yes = 1),
+                               binary_labels = c('No' = 0, 'Yes' = 1),
                                meta_vars) {
 
   var_type <- val_labels |>
@@ -651,6 +651,7 @@ create_tabulations <- function(loaded_data,
                                var_labels,
                                val_labels,
                                no_val_labels = NULL,
+                               binary_labels = c('No' = 0, 'Yes' = 1),
                                respid_var = 'respid',
                                col_var = NULL,
                                weight_var = NULL) {
@@ -668,7 +669,8 @@ create_tabulations <- function(loaded_data,
   var_types <- classify_variables(loaded_data = loaded_data,
                                   val_labels = val_labels,
                                   no_val_labels = no_val_labels,
-                                  meta_vars = meta_vars)
+                                  meta_vars = meta_vars,
+                                  binary_labels = binary_labels)
 
   # subset variables by type for aggregation
   mean_dt <- var_types[type %in% c('multi', 'numeric')]
