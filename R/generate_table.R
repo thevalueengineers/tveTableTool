@@ -425,7 +425,7 @@ classify_variables <- function(loaded_data,
                    'val_label',
                    'val_value')] |>
     _[, list(valid_labels = identical(sort(val_label), names(binary_labels)),
-             valid_values = identical(sort(val_value), binary_labels)),
+             valid_values = identical(sort(val_value), unname(binary_labels))),
       by = 'var_name'] |>
     _[, 'type' := data.table::fifelse(valid_labels & valid_values, 'multi','single')] |>
     _[, c('valid_labels', 'valid_values') := NULL]
