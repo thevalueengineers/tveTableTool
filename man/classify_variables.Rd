@@ -4,7 +4,13 @@
 \alias{classify_variables}
 \title{Classify variables by type}
 \usage{
-classify_variables(loaded_data, val_labels, no_val_labels = NULL, meta_vars)
+classify_variables(
+  loaded_data,
+  val_labels,
+  no_val_labels = NULL,
+  binary_labels = c(No = 0, Yes = 1),
+  meta_vars
+)
 }
 \description{
 Classify variables by type

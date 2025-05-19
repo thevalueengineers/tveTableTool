@@ -35,7 +35,10 @@ test_sav <- tibble::tibble(
     rnorm(100),
     label = 'numeric var1'
   ),
-  char_var1 = sample(letters, 100, replace = TRUE)
+  char_var1 = labelled::labelled(
+    sample(letters, 100, replace = TRUE),
+    label = 'character var 1'
+  )
 )
 
 # Save the dataset as a .sav file

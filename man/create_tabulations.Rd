@@ -8,7 +8,6 @@ create_tabulations(
   loaded_data,
   var_labels,
   val_labels,
-  row_vars,
   no_val_labels = NULL,
   respid_var = "respid",
   col_var = NULL,

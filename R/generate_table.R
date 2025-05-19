@@ -417,14 +417,15 @@ generate_table <- function(dat,
 classify_variables <- function(loaded_data,
                                val_labels,
                                no_val_labels = NULL,
+                               binary_labels = c(No = 0, Yes = 1),
                                meta_vars) {
 
   var_type <- val_labels |>
     _[, .N, by = c('var_name',
                    'val_label',
                    'val_value')] |>
-    _[, list(valid_labels = identical(sort(val_label), c('no', 'yes')),
-             valid_values = identical(sort(val_value), c(0, 1))),
+    _[, list(valid_labels = identical(sort(val_label), names(binary_labels)),
+             valid_values = identical(sort(val_value), binary_labels)),
       by = 'var_name'] |>
     _[, 'type' := data.table::fifelse(valid_labels & valid_values, 'multi','single')] |>
     _[, c('valid_labels', 'valid_values') := NULL]
@@ -649,7 +650,6 @@ calculate_freqs <- function(input_data,
 create_tabulations <- function(loaded_data,
                                var_labels,
                                val_labels,
-                               row_vars,
                                no_val_labels = NULL,
                                respid_var = 'respid',
                                col_var = NULL,
