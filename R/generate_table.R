@@ -467,7 +467,7 @@ calculate_means <- function(input_data,
                      value.name = "value",
                      variable.factor = FALSE) |>
     _[, list(total = weighted.mean(value,
-                                   wa = get(weight_var),
+                                   w = get(weight_var),
                                    na.rm = TRUE)),
       by = c('row_variable')] |>
     data.table::melt(id.vars = c('row_variable'),
