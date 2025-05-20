@@ -460,14 +460,16 @@ calculate_means <- function(input_data,
                             val_labels) {
 
   temp_data <- data.table::copy(input_data)
+  temp_data[, 'aux_internal_weight' := get(weight_var)] |>
+    _[, get(weight_var) := NULL]
 
   total_means <- temp_data |>
-    data.table::melt(id.vars = c(respid_var, weight_var, col_var),
+    data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                      variable.name = "row_variable",
                      value.name = "value",
                      variable.factor = FALSE) |>
     _[, list(total = weighted.mean(value,
-                                   w = get(weight_var),
+                                   w = aux_internal_weight,
                                    na.rm = TRUE)),
       by = c('row_variable')] |>
     data.table::melt(id.vars = c('row_variable'),
@@ -480,12 +482,12 @@ calculate_means <- function(input_data,
   if(isFALSE(is.null(col_var))) {
 
     col_means <- temp_data |>
-      data.table::melt(id.vars = c(respid_var, weight_var, col_var),
+      data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                        variable.name = "row_variable",
                        value.name = "score",
                        variable.factor = FALSE) |>
       _[, list(score = weighted.mean(score,
-                                     w = get(weight_var),
+                                     w = aux_internal_weight,
                                      na.rm = TRUE)),
         by = c('row_variable', col_var)] |>
       data.table::melt(id.vars = c('row_variable', 'score'),
