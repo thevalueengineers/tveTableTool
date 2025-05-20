@@ -461,7 +461,7 @@ calculate_means <- function(input_data,
 
   temp_data <- data.table::copy(input_data)
   temp_data[, 'aux_internal_weight' := get(weight_var)] |>
-    _[, get(weight_var) := NULL]
+    _[, (weight_var) := NULL]
 
   total_means <- temp_data |>
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
