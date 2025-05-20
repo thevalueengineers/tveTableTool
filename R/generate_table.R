@@ -467,7 +467,7 @@ calculate_means <- function(input_data,
                      value.name = "value",
                      variable.factor = FALSE) |>
     _[, list(total = weighted.mean(value,
-                                   wt = get(weight_var),
+                                   wa = get(weight_var),
                                    na.rm = TRUE)),
       by = c('row_variable')] |>
     data.table::melt(id.vars = c('row_variable'),
@@ -485,7 +485,7 @@ calculate_means <- function(input_data,
                        value.name = "score",
                        variable.factor = FALSE) |>
       _[, list(score = weighted.mean(score,
-                                     wt = get(weight_var),
+                                     w = get(weight_var),
                                      na.rm = TRUE)),
         by = c('row_variable', col_var)] |>
       data.table::melt(id.vars = c('row_variable', 'score'),
