@@ -507,7 +507,7 @@ calculate_means <- function(input_data,
 
     data.table::set(total_means,
                     j = 'val_value',
-                    value = as.charcter(total_means[['val_value']]))
+                    value = as.character(total_means[['val_value']]))
 
 
   }
