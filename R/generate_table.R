@@ -460,8 +460,24 @@ calculate_means <- function(input_data,
                             val_labels) {
 
   temp_data <- data.table::copy(input_data)
+  temp_val_labels <- data.table::copy(val_labels)
   temp_data[, 'aux_internal_weight' := get(weight_var)] |>
     _[, (weight_var) := NULL]
+
+  data.table::set(temp_val_labels,
+                  j = 'val_value',
+                  value = as.character(temp_val_labels[['val_value']]))
+
+  var_mask <- setdiff(colnames(temp_data),
+                      c(respid_var, weight_var))
+
+  for(j in var_mask){
+
+    data.table::set(temp_data,
+                    j = j,
+                    value = as.character(temp_data[[j]]))
+
+  }
 
   total_means <- temp_data |>
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
@@ -504,7 +520,7 @@ calculate_means <- function(input_data,
   }
 
   output_means <- data.table::merge.data.table(total_means,
-                                               val_labels,
+                                               temp_val_labels,
                                                by.x = c('col_variable', 'val_value'),
                                                by.y = c('var_name', 'val_value'),
                                                all.x = TRUE)
