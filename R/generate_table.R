@@ -505,6 +505,10 @@ calculate_means <- function(input_data,
       list(col_means) |>
       data.table::rbindlist(use.names = TRUE)
 
+    data.table::set(total_mean,
+                    j = 'val_value',
+                    value = as.charcter(total_means[['val_value']]))
+
 
   }
 
