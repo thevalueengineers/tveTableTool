@@ -468,17 +468,6 @@ calculate_means <- function(input_data,
                   j = 'val_value',
                   value = as.character(temp_val_labels[['val_value']]))
 
-  var_mask <- setdiff(colnames(temp_data),
-                      c(respid_var, weight_var))
-
-  for(j in var_mask){
-
-    data.table::set(temp_data,
-                    j = j,
-                    value = as.character(temp_data[[j]]))
-
-  }
-
   total_means <- temp_data |>
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                      variable.name = "row_variable",
