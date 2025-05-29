@@ -607,7 +607,12 @@ calculate_freqs <- function(input_data,
                                                by.y = c('var_name', 'val_value'),
                                                all.x = TRUE)
 
-  output_freqs[is.na(val_label), 'val_label' := col_variable]
+  # output_freqs[is.na(val_label), 'val_label' := col_variable]
+  output_freqs[is.na(val_label),
+               'val_label' := data.table::fifelse(col_variable == 'total',
+                                                  col_variable,
+                                                  val_value)]
+  output_freqs[val_label == '', 'val_label' := 'blank']
 
   output_colprops <- data.table::copy(output_freqs)
   output_colprops[, 'n' := NULL]
