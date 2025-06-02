@@ -72,6 +72,9 @@ calculate_freqs <- function(input_data,
     val_labels <- data.table::as.data.table(val_labels)
   }
 
+  # fill in any missing value labels with "blank"
+  val_labels[is.na(val_label), val_label := 'blank']
+
   # transform var_labels into data.table for efficient processing
   if(isTRUE(methods::is(var_labels, 'data.table'))) {
     var_labels <- data.table::copy(var_labels)

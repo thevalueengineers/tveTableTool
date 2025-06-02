@@ -18,5 +18,6 @@ globalVariables(c('.', 'Total', 'Variable', 'variable', '.data', 'column',
                   'value', 'Label', 'value_label', 'type', 'value label',
                   'thead', 'tr', 'th', 'tags', 'hr', 'val_label', 'val_value',
                   'valid_labels', 'valid_values', 'var_name', '..mean_vars',
-                  '..vars_mask', 'aux_internal_weight', 'score', 'col_variable'))
+                  '..vars_mask', 'aux_internal_weight', 'score', 'col_variable',
+                  'row_level'))
 NULL
