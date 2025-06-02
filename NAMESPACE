@@ -2,6 +2,7 @@
 
 export("%>%")
 export(add_index)
+export(calculate_means)
 export(classify_variables)
 export(colChoice_server)
 export(colChoice_ui)
