@@ -114,7 +114,8 @@ calculate_freqs <- function(input_data,
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                      variable.name = "row_variable",
                      value.name = "row_level",
-                     variable.factor = FALSE) |>
+                     variable.factor = FALSE,
+                     measure.vars = freq_vars) |>
     _[, list(n = sum(aux_internal_weight)),
       by = c('row_variable', 'row_level')] |>
     _[, 'prop' := n/sum(n),
@@ -130,7 +131,8 @@ calculate_freqs <- function(input_data,
       data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                        variable.name = "row_variable",
                        value.name = "row_level",
-                       variable.factor = FALSE) |>
+                       variable.factor = FALSE,
+                       measure.vars = freq_vars) |>
       _[, list(n = sum(aux_internal_weight)),
         by = c('row_variable', 'row_level', col_var)] |>
       _[, 'prop' := n/sum(n),
@@ -161,9 +163,10 @@ calculate_freqs <- function(input_data,
 
   # add dummy value label "total" for total frequqncies
   output_freqs[is.na(val_label),
-               'val_label' := data.table::fifelse(col_variable == 'total',
-                                                  col_variable,
-                                                  val_value)]
+                  'val_label' := data.table::fifelse(col_variable == 'total',
+                                                     col_variable,
+                                                     val_value)]
+
   # add "blank" dummy value for any "empty" value label
   output_freqs[val_label == '', 'val_label' := 'blank']
 
@@ -177,14 +180,22 @@ calculate_freqs <- function(input_data,
   # pivot wider, add variable labels, and value labels to each table
   output_colprops <- output_colprops |>
     data.table::dcast(row_variable + row_level ~ val_label,
-                      value.var = c('prop')) |>
+                      value.var = c('prop'),
+                      fill = 0) |>
     data.table::merge.data.table(var_labels,
                                  by.x = 'row_variable',
                                  by.y = 'var_name') |>
     data.table::merge.data.table(val_labels,
                                  by.x = c('row_variable', 'row_level'),
-                                 by.y = c('var_name', 'val_value')) |>
+                                 by.y = c('var_name', 'val_value'),
+                                 all.x = TRUE) |>
+    _[, 'val_label' := data.table::fifelse(is.na(val_label), row_level, val_label)] |>
     _[, 'row_level' := NULL]
+
+  # add "blank" dummy value for any "empty" value label
+  output_colprops[, 'val_label' := data.table::fifelse(val_label == '' | is.na(val_label),
+                                                       'blank',
+                                                       val_label)]
 
   # label output columns cleanly
   data.table::setnames(output_colprops,
@@ -197,14 +208,22 @@ calculate_freqs <- function(input_data,
 
   output_coln <- output_coln |>
     data.table::dcast(row_variable + row_level ~ val_label,
-                      value.var = c('n')) |>
+                      value.var = c('n'),
+                      fill = 0) |>
     data.table::merge.data.table(var_labels,
                                  by.x = 'row_variable',
                                  by.y = 'var_name')|>
     data.table::merge.data.table(val_labels,
                                  by.x = c('row_variable', 'row_level'),
-                                 by.y = c('var_name', 'val_value')) |>
+                                 by.y = c('var_name', 'val_value'),
+                                 all.x = TRUE) |>
+    _[, 'val_label' := data.table::fifelse(is.na(val_label), row_level, val_label)] |>
     _[, 'row_level' := NULL]
+
+  # add "blank" dummy value for any "empty" value label
+  output_coln[, 'val_label' := data.table::fifelse(val_label == '' | is.na(val_label),
+                                                       'blank',
+                                                       val_label)]
 
   # label output columns cleanly
   data.table::setnames(output_coln,

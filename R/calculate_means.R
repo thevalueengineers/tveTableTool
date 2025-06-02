@@ -112,7 +112,8 @@ calculate_means <- function(input_data,
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                      variable.name = "row_variable",
                      value.name = "value",
-                     variable.factor = FALSE) |>
+                     variable.factor = FALSE,
+                     measure.vars = mean_vars) |>
     _[, list(total = weighted.mean(value,
                                    w = aux_internal_weight,
                                    na.rm = TRUE)),
@@ -132,7 +133,8 @@ calculate_means <- function(input_data,
       data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                        variable.name = "row_variable",
                        value.name = "score",
-                       variable.factor = FALSE) |>
+                       variable.factor = FALSE,
+                       measure.vars = mean_vars) |>
       _[, list(score = weighted.mean(score,
                                      w = aux_internal_weight,
                                      na.rm = TRUE)),
