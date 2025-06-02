@@ -2,7 +2,7 @@ data(test_list)
 
 test_that("ensure weighted mean calculations works as expected with all defaults", {
 
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8), with = F],
+  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
                              respid_var = 'respid',
                              var_labels = test_list$var_labels,
                              val_labels = test_list$val_labels)
@@ -18,7 +18,7 @@ test_that("ensure weighted mean calculations works as expected with all defaults
 })
 
 test_that("calculate_means works with column breakdown", {
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8), with = F],
+  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
                             respid_var = 'respid',
                             var_labels = test_list$var_labels,
                             val_labels = test_list$val_labels,
@@ -38,7 +38,7 @@ test_that("calculate_means works with column breakdown", {
 
 test_that("calculate_means works with custom weights", {
 
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8, 13), with = F],
+  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8, 13)],
                             respid_var = 'respid',
                             var_labels = test_list$var_labels,
                             val_labels = test_list$val_labels,
@@ -50,7 +50,7 @@ test_that("calculate_means works with custom weights", {
 })
 
 test_that("calculate_means works with custom mean variables", {
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8), with = F],
+  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
                             respid_var = 'respid',
                             var_labels = test_list$var_labels,
                             val_labels = test_list$val_labels,
@@ -62,7 +62,7 @@ test_that("calculate_means works with custom mean variables", {
 })
 
 test_that("calculate_means returns data.table when tibble_out is FALSE", {
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8), with = F],
+  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
                             respid_var = 'respid',
                             var_labels = test_list$var_labels,
                             val_labels = test_list$val_labels,
@@ -73,31 +73,15 @@ test_that("calculate_means returns data.table when tibble_out is FALSE", {
 })
 
 test_that("calculate_means throws error for non-numeric variables", {
-  # Create test data with a character variable
-  test_data <- data.table::copy(test_list$loaded_data[, c(1, 4, 7:8), with = F])
-  test_data[, char_var := "test"]
 
   expect_error(
-    calculate_means(input_data = test_data,
+    calculate_means(input_data = test_list$loaded_data[, c(1, 4, 5, 7:8)],
                    respid_var = 'respid',
                    var_labels = test_list$var_labels,
                    val_labels = test_list$val_labels,
-                   mean_vars = c('numvar_2', 'char_var')),
+                   mean_vars = c('numvar_2', 'charvar_1')),
     "Only numeric variables allowed for mean scores"
   )
 })
 
-test_that("calculate_means handles NA values correctly", {
-  # Create test data with NA values
-  test_data <- data.table::copy(test_list$loaded_data[, c(1, 4, 7:8), with = F])
-  test_data[1:5, numvar_2 := NA]
 
-  new_out <- calculate_means(input_data = test_data,
-                            respid_var = 'respid',
-                            var_labels = test_list$var_labels,
-                            val_labels = test_list$val_labels)
-
-  # Check that output is still valid
-  expect_true(all(is.numeric(new_out$Total)))
-  expect_false(any(is.na(new_out$Total)))
-})

@@ -18,10 +18,10 @@
 #'
 #' @examples
 #' data(test_list)
-#' 
+#'
 #' # Calculate means for specific variables with all defaults
 #' calculate_means(
-#'   input_data = test_list$loaded_data[, c(1, 4, 7:8), with = FALSE],
+#'   input_data = test_list$loaded_data[, c(1, 4, 7:8)],
 #'   respid_var = 'respid',
 #'   var_labels = test_list$var_labels,
 #'   val_labels = test_list$val_labels
@@ -29,7 +29,7 @@
 #'
 #' # Calculate means with a column breakdown
 #' calculate_means(
-#'   input_data = test_list$loaded_data[, c(1, 4, 7:8), with = FALSE],
+#'   input_data = test_list$loaded_data[, c(1, 4, 7:8)],
 #'   respid_var = 'respid',
 #'   var_labels = test_list$var_labels,
 #'   val_labels = test_list$val_labels,
@@ -38,7 +38,7 @@
 #'
 #' # Calculate means with custom weights
 #' calculate_means(
-#'   input_data = test_list$loaded_data[, c(1, 4, 7:8, 13), with = FALSE],
+#'   input_data = test_list$loaded_data[, c(1, 4, 7:8, 13)],
 #'   respid_var = 'respid',
 #'   var_labels = test_list$var_labels,
 #'   val_labels = test_list$val_labels,
