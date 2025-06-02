@@ -69,51 +69,46 @@ calculate_means <- function(input_data,
     val_labels <- data.table::as.data.table(val_labels)
   }
 
+  # transform var_labels into data.table for efficient processing
   if(isTRUE(methods::is(var_labels, 'data.table'))) {
     var_labels <- data.table::copy(var_labels)
   } else {
     var_labels <- data.table::as.data.table(var_labels)
   }
 
-
-  # create internal copies of data and value labels to avoid untoward
-  # updates by reference (see data.table documentation for details)
-  temp_data <- data.table::copy(input_data)
-  temp_val_labels <- data.table::copy(val_labels)
-
   # add dummy weight if not available
   if(isTRUE(is.null(weight_var))){
-    temp_data[, 'aux_internal_weight' := 1]
+    input_data[, 'aux_internal_weight' := 1]
   } else {
-    temp_data[, 'aux_internal_weight' := get(weight_var)] |>
+    input_data[, 'aux_internal_weight' := get(weight_var)] |>
       _[, (weight_var) := NULL]
   }
 
   # keep only numeric/valid variables for mean score calculations
   if(isTRUE(is.null(mean_vars))){
-    mean_vars <- setdiff(colnames(temp_data),
+    mean_vars <- setdiff(colnames(input_data),
                          c(respid_var, 'aux_internal_weight', col_var))
   }
 
   # if any variables in mean_vars are not numeric, return error
   assertthat::assert_that(
-    all(sapply(temp_data[, ..mean_vars], is.numeric)),
+    all(sapply(input_data[, ..mean_vars], is.numeric)),
     msg = paste0("Only numeric variables allowed for mean scores, check variables: ",
-                 paste(mean_vars[!sapply(temp_data[, ..mean_vars], is.numeric)],
+                 paste(mean_vars[!sapply(input_data[, ..mean_vars], is.numeric)],
                        collapse = ", "))
   )
 
   # ensure to keep only relevant variables for calculations
   vars_mask <- c(respid_var, 'aux_internal_weight', col_var, mean_vars)
-  temp_data <- temp_data[, ..vars_mask]
+  input_data <- input_data[, ..vars_mask]
 
   # ensure all value labels are interpreted as characters for consistent processing
-  data.table::set(temp_val_labels,
+  data.table::set(val_labels,
                   j = 'val_value',
-                  value = as.character(temp_val_labels[['val_value']]))
+                  value = as.character(val_labels[['val_value']]))
 
   # calculate means by variable at total (i.e. full data) level
-  total_means <- temp_data |>
+  total_means <- input_data |>
     data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                      variable.name = "row_variable",
                      value.name = "value",
@@ -133,7 +128,7 @@ calculate_means <- function(input_data,
   if(isFALSE(is.null(col_var))) {
 
     # calculate means per variables by col_var
-    col_means <- temp_data |>
+    col_means <- input_data |>
       data.table::melt(id.vars = c(respid_var, 'aux_internal_weight', col_var),
                        variable.name = "row_variable",
                        value.name = "score",
@@ -163,7 +158,7 @@ calculate_means <- function(input_data,
 
   # add value labels
   output_means <- data.table::merge.data.table(total_means,
-                                               temp_val_labels,
+                                               val_labels,
                                                by.x = c('col_variable', 'val_value'),
                                                by.y = c('var_name', 'val_value'),
                                                all.x = TRUE)
