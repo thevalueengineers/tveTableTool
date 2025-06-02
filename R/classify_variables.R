@@ -60,14 +60,14 @@ classify_variables <- function(loaded_data,
   if(isTRUE(methods::is(loaded_data, 'data.table'))) {
     loaded_data <- data.table::copy(loaded_data)
   } else {
-    data.table::setDT(loaded_data)
+    loaded_data <- data.table::as.data.table(loaded_data)
   }
 
   # transform val_labels into data.table for efficient processing
   if(isTRUE(methods::is(val_labels, 'data.table'))) {
     val_labels <- data.table::copy(val_labels)
   } else {
-    data.table::setDT(val_labels)
+    val_labels <- data.table::as.data.table(val_labels)
   }
 
   var_type <- val_labels |>

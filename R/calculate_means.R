@@ -56,13 +56,25 @@ calculate_means <- function(input_data,
                             tibble_out = TRUE) {
 
   # transform input_data into data.table for efficient processing
-  if(isFALSE(methods::is(input_data, 'data.table'))) data.table::setDT(input_data)
+  if(isTRUE(methods::is(input_data, 'data.table'))) {
+    input_data <- data.table::copy(input_data)
+  } else {
+    input_data <- data.table::as.data.table(input_data)
+  }
 
   # transform val_labels into data.table for efficient processing
-  if(isFALSE(methods::is(val_labels, 'data.table'))) data.table::setDT(val_labels)
+  if(isTRUE(methods::is(val_labels, 'data.table'))) {
+    val_labels <- data.table::copy(val_labels)
+  } else {
+    val_labels <- data.table::as.data.table(val_labels)
+  }
 
-  # transform_var_labels into data.table for efficient processing
-  if(isFALSE(methods::is(var_labels, 'data.table'))) data.table::setDT(var_labels)
+  if(isTRUE(methods::is(var_labels, 'data.table'))) {
+    var_labels <- data.table::copy(var_labels)
+  } else {
+    var_labels <- data.table::as.data.table(var_labels)
+  }
+
 
   # create internal copies of data and value labels to avoid untoward
   # updates by reference (see data.table documentation for details)
