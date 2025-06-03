@@ -90,7 +90,7 @@ classify_variables <- function(loaded_data,
     if(isTRUE(methods::is(no_val_labels, 'data.table'))) {
       no_val_labels <- data.table::copy(no_val_labels)
     } else {
-      data.table::setDT(no_val_labels)
+      no_val_labels <- data.table::as.data.table(no_val_labels)
     }
 
     # append any variables that have no value labels but for which types

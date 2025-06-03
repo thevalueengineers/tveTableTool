@@ -2,10 +2,12 @@
 
 export("%>%")
 export(add_index)
+export(calculate_freqs)
 export(calculate_means)
 export(classify_variables)
 export(colChoice_server)
 export(colChoice_ui)
+export(create_tabulations)
 export(filterVariable_server)
 export(filterVariable_ui)
 export(generate_table)

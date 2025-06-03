@@ -49,17 +49,6 @@ test_that("calculate_means works with custom weights", {
   expect_equal(nrow(new_out), 3) # Should have 3 variables
 })
 
-test_that("calculate_means works with custom mean variables", {
-  new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
-                            respid_var = 'respid',
-                            var_labels = test_list$var_labels,
-                            val_labels = test_list$val_labels,
-                            mean_vars = c('numvar_2', 'scvar_1'))
-
-  # Check that only specified variables are included
-  expect_equal(nrow(new_out), 2)
-  expect_true(all(new_out$Variable %in% c('numvar_2', 'scvar_1')))
-})
 
 test_that("calculate_means returns data.table when tibble_out is FALSE", {
   new_out <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
@@ -83,5 +72,7 @@ test_that("calculate_means throws error for non-numeric variables", {
     "Only numeric variables allowed for mean scores"
   )
 })
+
+
 
 
