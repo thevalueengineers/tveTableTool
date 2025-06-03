@@ -74,5 +74,22 @@ test_that("calculate_means throws error for non-numeric variables", {
 })
 
 
+test_that("test that values in val_labels can be any type of numeric ", {
 
+  int_val_labels <- test_list$val_labels
+  int_val_labels$val_value <- as.integer(int_val_labels$val_value)
+
+  new_out_numeric <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
+                             respid_var = 'respid',
+                             var_labels = test_list$var_labels,
+                             val_labels = test_list$val_labels)
+
+  new_out_integer <- calculate_means(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
+                                     respid_var = 'respid',
+                                     var_labels = test_list$var_labels,
+                                     val_labels = int_val_labels)
+
+  expect_identical(new_out_numeric, new_out_integer)
+
+})
 

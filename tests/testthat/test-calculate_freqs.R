@@ -107,3 +107,23 @@ test_that("function handles missing value labels", {
   # Verify that missing labels are handled appropriately
   expect_false(any(is.na(missing_label_out$output_coln$Value)))
 })
+
+
+test_that("test that values in val_labels can be any type of numeric ", {
+
+  int_val_labels <- test_list$val_labels
+  int_val_labels$val_value <- as.integer(int_val_labels$val_value)
+
+  new_out_numeric <- calculate_freqs(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
+                                     respid_var = 'respid',
+                                     var_labels = test_list$var_labels,
+                                     val_labels = test_list$val_labels)
+
+  new_out_integer <- calculate_freqs(input_data = test_list$loaded_data[, c(1, 4, 7:8)],
+                                     respid_var = 'respid',
+                                     var_labels = test_list$var_labels,
+                                     val_labels = int_val_labels)
+
+  expect_identical(new_out_numeric, new_out_integer)
+
+})
