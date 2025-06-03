@@ -24,7 +24,7 @@ test_that("function works as expected with defaults", {
   expect_equal(result$colprops_table |> dim(),
                c(15, 4))
 
-  expect_true(all(sapply(result, methods::is, 'data.table')))
+  expect_true(all(sapply(result, methods::is, 'tbl_df')))
 
 })
 
