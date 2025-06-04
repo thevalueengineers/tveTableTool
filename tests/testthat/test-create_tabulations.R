@@ -71,9 +71,9 @@ test_that("variable types and frequency tables are returned if no mean score tab
   expect_equal(dim(result$var_types),
                c(8, 2))
   expect_equal(dim(result$n_table),
-               c(33, 4))
+               c(31, 4))
   expect_equal(dim(result$colprops_table),
-               c(33, 4))
+               c(31, 4))
 })
 
 
@@ -97,8 +97,33 @@ test_that("variable types and mean tables are returned if no frequency tables ar
 
   expect_equal(dim(result$var_types),
                c(5, 2))
-  expect_equal(dim(result$mean_ble),
+  expect_equal(dim(result$means_table),
                c(3, 3))
+  expect_null(result$n_table)
+  expect_null(result$colprops_table)
+
+})
+
+
+test_that("variable types table returned if no other table is possible",{
+
+  meta_var_mask <- c('respid', 'weight')
+  valid_mask <- colnames(test_list$loaded_data) %in% meta_var_mask
+
+  reduced_data <- test_list$loaded_data[, valid_mask]
+  reduced_var_labels <- test_list$var_labels[test_list$var_labels$var_name %in% meta_var_mask, ]
+  reduced_val_labels <- test_list$val_labels[test_list$val_labels$var_name %in% meta_var_mask, ]
+  reduced_no_val_labels <- test_list$no_val_labels[test_list$no_val_labels$var_name %in% meta_var_mask, ]
+
+  result <- create_tabulations(
+    loaded_data = reduced_data,
+    var_labels = reduced_var_labels,
+    val_labels = reduced_val_labels,
+    no_val_labels = reduced_no_val_labels)
+
+  expect_equal(dim(result$var_types),
+               c(2, 2))
+  expect_null(dim(result$means_table))
   expect_null(result$n_table)
   expect_null(result$colprops_table)
 
