@@ -135,7 +135,7 @@ create_tabulations <- function(loaded_data,
     mean_calcs_result <- NULL
   }
 
-  if(isTRUE(nrow(mean_dt) > 0)) {
+  if(isTRUE(nrow(freqs_dt) > 0)) {
     colfreq_mask <- c(meta_vars,
                       col_var,
                       freqs_dt[['var_name']]) |>
