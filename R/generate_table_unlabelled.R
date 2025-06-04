@@ -140,7 +140,7 @@ single_calcs_unlabs <- function(dat,
     # Convert character or factor columns to ordered factors, excluding the weight variable
     dplyr::mutate(
       dplyr::across(
-        where(~ is.character(.x) | is.factor(.x)) & -tidyselect::all_of(weight_var),
+        tidyselect::where(~ is.character(.x) | is.factor(.x)) & -tidyselect::all_of(weight_var),
         ~haven::as_factor(.x)
       )
     ) |>
