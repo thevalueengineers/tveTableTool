@@ -149,11 +149,34 @@ create_tabulations <- function(loaded_data,
     freq_calcs_result <- NULL
   }
 
+  if(isFALSE(is.null(col_var))) {
+
+    colfreq_mask <- c(meta_vars,
+                      col_var) |>
+      unique()
+
+  # Count of column var
+  freq_base_result <- calculate_freqs(
+    input_data = loaded_data[, ..colfreq_mask],
+    col_var = NULL,
+    respid_var = respid_var,
+    weight_var = weight_var,
+    val_labels = val_labels,
+    var_labels = var_labels,
+    freq_vars = NULL,
+    tibble_out = tibble_out)
+} else {
+  freq_base_result <- NULL
+}
+
+
   list(
     var_types = var_types,
     means_table = mean_calcs_result,
     n_table = freq_calcs_result$output_coln,
-    colprops_table = freq_calcs_result$output_colprops
+    colprops_table = freq_calcs_result$output_colprops,
+    base_n_table = freq_base_result$output_coln,
+    base_props_table = freq_base_result$output_colprops
   )
 
 }
