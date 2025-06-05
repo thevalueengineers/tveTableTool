@@ -10,6 +10,6 @@ test_that("function works as expected with defaults", {
 
   expect_named(result,
                c("var_types", "means_table",
-                 "n_table", "colprops_table"))
+                 "n_table", "colprops_table", "base_n_table", "base_props_table"))
 
 })
