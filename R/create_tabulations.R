@@ -108,6 +108,12 @@ create_tabulations <- function(loaded_data,
   mean_dt <- var_types[type %in% c('multi', 'numeric')]
   freqs_dt <- var_types[type %in% c('single', 'multi', 'character')]
 
+  # align type of var_types to overall tibble_out value
+  if(isTRUE(tibble_out)) {
+    data.table::setDF(var_types)
+    var_types <- tibble::tibble(var_types)
+  }
+
   # Conditional calculations for numeric and multi-code variables
   if(isTRUE(nrow(mean_dt) > 0)) {
     colmean_mask <- c(meta_vars,
@@ -129,7 +135,7 @@ create_tabulations <- function(loaded_data,
     mean_calcs_result <- NULL
   }
 
-  if(isTRUE(nrow(mean_dt) > 0)) {
+  if(isTRUE(nrow(freqs_dt) > 0)) {
     colfreq_mask <- c(meta_vars,
                       col_var,
                       freqs_dt[['var_name']]) |>

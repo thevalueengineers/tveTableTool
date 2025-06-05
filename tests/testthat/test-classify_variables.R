@@ -59,3 +59,17 @@ test_that("function works with no_val_labels parameter", {
 })
 
 
+test_that("test that values in val_labels can be any type of numeric ", {
+
+  new_types_numeric <- classify_variables(loaded_data = test_list$loaded_data,
+                                          val_labels = test_list$val_labels)
+
+  int_val_labels <- test_list$val_labels
+  int_val_labels$val_value <- as.integer(int_val_labels$val_value)
+
+  new_types_integer <- classify_variables(loaded_data = test_list$loaded_data,
+                                  val_labels = int_val_labels)
+
+  expect_identical(new_types_numeric, new_types_integer)
+
+})

@@ -189,14 +189,14 @@ single_calcs <- function(dat,
     # If labelled, convert to ordered factor
     dplyr::mutate(
       dplyr::across(
-        where(labelled::is.labelled) & -tidyselect::all_of(weight_var),
+        tidyselect::where(labelled::is.labelled) & -tidyselect::all_of(weight_var),
         ~haven::as_factor(.x, ordered = TRUE)
       )
     ) %>%
     # Add explicit NA level
     dplyr::mutate(
       dplyr::across(
-        where(labelled::is.labelled) & -tidyselect::all_of(weight_var),
+        tidyselect::where(labelled::is.labelled) & -tidyselect::all_of(weight_var),
         ~forcats::fct_na_value_to_level(.x)
       )
     ) %>%

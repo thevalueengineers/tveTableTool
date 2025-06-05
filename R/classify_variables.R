@@ -79,7 +79,7 @@ classify_variables <- function(loaded_data,
     # if values and value labels found per variable match those in binary_labels,
     # then classify as multi-code, otherwise single-code
     _[, list(valid_labels = identical(sort(val_label), sort(names(binary_labels))),
-             valid_values = identical(sort(val_value), unname(sort(binary_labels)))),
+             valid_values = isTRUE(all.equal(sort(val_value), unname(sort(binary_labels))))),
       by = 'var_name'] |>
     _[, 'type' := data.table::fifelse(valid_labels & valid_values, 'multi','single')] |>
     _[, c('valid_labels', 'valid_values') := NULL]
