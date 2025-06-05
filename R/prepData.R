@@ -20,7 +20,7 @@ prepData <- function(id, data) {
     function(input, output, session) {
       shiny::reactive({
         shiny::req(data())
-        dplyr::select(data(), tidyselect::where(is.numeric)) %>%
+        dplyr::select(data(), tidyselect::all_of(tidyselect::where(is.numeric))) %>%
           # add no_weighting variable
           dplyr::mutate(no_weighting = 1)
       })
