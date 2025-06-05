@@ -26,8 +26,7 @@ Imports:
     stats,
     tibble,
     data.table,
-    methods,
-    shiny
+    methods
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
