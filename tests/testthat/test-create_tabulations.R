@@ -24,8 +24,11 @@ test_that("function works as expected with defaults", {
   expect_equal(result$colprops_table |> dim(),
                c(15, 4))
 
-  expect_true(all(sapply(result, methods::is, 'tbl_df')))
+  expect_true(all(sapply(result[1:4], methods::is, 'tbl_df')))
 
+  # Or if testing for NA values:
+  expect_true(all(is.na(result[[5]])))
+  expect_true(all(is.na(result[[6]])))
 })
 
 
@@ -128,3 +131,18 @@ test_that("variable types table returned if no other table is possible",{
   expect_null(result$colprops_table)
 
 })
+
+test_that("base table outputs meet expectations ",{
+
+  result <- create_tabulations(
+    loaded_data = test_list$loaded_data,
+    var_labels = test_list$var_labels,
+    val_labels = test_list$val_labels,
+    col_var = "scvar_1")
+
+  expect_s3_class(result$base_n_table, "data.frame")
+  expect_s3_class(result$base_props_table, "data.frame")
+
+})
+
+
