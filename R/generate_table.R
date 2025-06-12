@@ -211,7 +211,7 @@ single_calcs <- function(dat,
     # Add total column
     dplyr::bind_rows(dplyr::mutate(., column = "Total"))
 
-  counted <-  prep %>%
+    counted <-  prep %>%
       dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
       dplyr::count(wt = .data[[weight_var]])
 
