@@ -1,198 +1,74 @@
-library(tveDataLoader)
-library(tidyr)
-library(purrr)
-library(dplyr)
-library(stringr)
-library(haven)
-library(assertthat)
-
 devtools::load_all()
-dat <- testTableData
 
-generate_table_new <- function(dat,
-                           row_vars,
-                           col_var,
-                           weight_var,
-                           variable_labels,
-                           value_labels) {
+result <- create_tabulations(
+  loaded_data = test_list$loaded_data,
+  var_labels = test_list$var_labels,
+  val_labels = test_list$val_labels,
+  col_var = "scvar_1"
+)
 
-  assertthat::assert_that(is.data.frame(dat))
-  assertthat::assert_that(is.character(row_vars))
-  assertthat::assert_that(is.character(col_var))
-  assertthat::assert_that(is.character(weight_var))
-  assertthat::assert_that(is.data.frame(variable_labels))
-  # rlang::arg_match(percents, c("columns", "rows", "none"))
+library(dplyr)
 
-#store a log of what order we want the data frame in based on the order of inputs
-rows_order <- data.frame(row_vars)
-order_df <- rows_order |>
-  mutate(order = rownames(rows_order)) |>
-  rename(name = row_vars) |>
-  mutate(order = as.numeric(order))
+subgroup_mask <- c("Value label A", "Value label C", "Value label D", "Value label E")
 
-#create data frame that detects whether multi or single code variable. Anything missing is either numeric or string.
-
-var_type <- value_labels %>%
-  split(.$variable) |>
-  map(
-    ~distinct(.x) %>%
-      {
-        if(all(.$value %in% c(0, 1)) & all(.$`value label` %in% c("Yes", "No"))) {
-          "MC"
-        } else {
-          "SC"
-        }
-      }
+out <- result$colprops_table |>
+  group_by(Variable) |>
+  mutate(
+    grand_total_mean = mean(c_across(all_of(subgroup_mask)), na.rm = TRUE)
   ) |>
-  bind_rows(.id = "variable") |>
-  pivot_longer(everything(), names_to = "variable", values_to = "type")
-
-#flag character vars in data frame - TRUE = character
-character_vars <- purrr::map_lgl(dat, ~ is.character(.x))
-
-#extract them from the data set so we can filter using it
-character_names <- names(dat)[character_vars]
-
-final_type <- variable_labels |>
-  #drop respid
-  filter(variable != "respid") |>
-  left_join(var_type,join_by("variable")) |>
-  #flag character vars
-  mutate(type = ifelse(
-    variable %in% character_names,"STRING",type)
-  ) |>
-  #anything else left is numeric
-  mutate(type = case_when(
-    is.na(type) ~ "NUM",
-    TRUE ~ type
-  ))
-
-#filter by variable type and row vars
-mc_flag <- final_type |> filter(type == "MC") |> filter(variable %in% row_vars) |> pull(variable)
-single_flag <- final_type |> filter(type == "SC") |> filter(variable %in% row_vars) |> pull(variable)
-numeric_flag <- final_type |> filter(type == "NUM")  |> filter(variable %in% row_vars) |> pull(variable)
-
-#numeric and multi code calculations - weighted means
-number_out <- dat |>
-  # add a specific column variable in case col_var is also selected as a row
-  # variable
-  dplyr::mutate(column = .data[[col_var]]) %>%
-  mutate(column = as_factor(column)) |>
-  dplyr::select(dplyr::all_of(c(numeric_flag,mc_flag, weight_var,"column"))) %>%
-  # now reselect leaving out col_var unless it is in row_vars
-  # add explicit NA level
-  dplyr::mutate(
-    dplyr::across(
-      -tidyselect::all_of(weight_var),
-      ~ ifelse(is.na(.), "0", as.character(.))
-    )
-  )|>
-  tidyr::pivot_longer(-c(tidyselect::all_of(weight_var), column)) |>
-  #convert value to numeric so we can calculate means
-  mutate(value = as.numeric(value))
-
-#weighted mean table using two group vars
-group_number <- number_out |>
-  group_by(name,column) |>
-  summarise(value = weighted.mean(value,wt = weight)) |>
   ungroup() |>
-  pivot_wider(names_from = "column",values_from = "value")
-
-#table using one group vars (just analysis variable)
-total_number <- number_out |>
-  group_by(name) |>
-  summarise(value = weighted.mean(value,wt = weight)) |>
-  ungroup() |>
-  rename(Total = value)
-
-#join them up and add label to show mean
-combined_number <- total_number |>
-  dplyr::left_join(group_number,join_by("name")) |>
-  left_join(variable_labels,join_by("name"=="variable")) |>
-  mutate(value = "mean") |>
-  select(name,label,value,everything())
-
-##single code calculations
-single_out <- dat |>
-  # add a specific column variable in case col_var is also selected as a row
-  # variable
-  dplyr::mutate(column = .data[[col_var]]) %>%
-  dplyr::select(dplyr::all_of(c(single_flag, weight_var,"column"))) %>%
-  # if labelled convert to ordered factor
-  dplyr::mutate(
-    dplyr::across(
-      where(labelled::is.labelled) & -tidyselect::all_of(weight_var),
-      ~haven::as_factor(.x, ordered = TRUE)
-    )
-  ) %>%
-  # add explicit NA level
-  dplyr::mutate(
-    dplyr::across(
-      -tidyselect::all_of(weight_var),
-      forcats::fct_na_value_to_level
-    )
-  ) %>%
-  # convert everything to character so that we can pivot longer
-  dplyr::mutate(
-    dplyr::across(
-      -tidyselect::all_of(weight_var),
-      as.character
-    )
-  ) %>%
-  tidyr::pivot_longer(-c(tidyselect::all_of(weight_var), column)) %>%
-  # add total column
-  dplyr::bind_rows(dplyr::mutate(., column = "Total")) %>%
-  dplyr::group_by(dplyr::across(-tidyselect::all_of(weight_var))) %>%
-  dplyr::count(wt = .data[[weight_var]]) %>%
-  dplyr::ungroup() %>%
-  tidyr::pivot_wider(
-    names_from = column,
-    values_from = n
-  ) %>%
-  dplyr::left_join(variable_labels, by = c("name" = "variable")) %>%
-  dplyr::relocate(label, .after = name) %>%
-  dplyr::relocate(Total, .after = value) %>%
-  # replace NA with 0
-  dplyr::mutate(
-    dplyr::across(-c(name, label, value), ~tidyr::replace_na(.x, 0))
+  # Calculate row means (mean across the value columns for each row)
+  rowwise() |>
+  mutate(
+    rowMean = mean(c_across(all_of(subgroup_mask)), na.rm = TRUE)
   ) |>
-  dplyr::group_by(name) %>%
-  dplyr::mutate(dplyr::across(-c(1:2), ~.x / sum(.x, na.rm = TRUE))) %>%
-  dplyr::ungroup()
-
-output <- bind_rows(combined_number,single_out) |>
-  left_join(order_df,join_by("name")) |>
-  arrange(order) |>
-  select(-order)
-
-#check number of unique rows in table matches number of row variables
-assert_that(length(unique(output$name))==length(row_vars))
-
-
-return(output)
-
-}
-
-
-setup_summary_vars <- function() {
-
-  c(
-    paste0("s1_", sprintf("%02d", c(01:08, 99))),
-    "s2",
-    "s3",
-    "s4",
-    paste0("c2_", sprintf("%02d", c(01:05))),
-    "s5"
+  ungroup() |>
+  # Calculate column means (mean down each value column)
+  group_by(Variable) |>
+  mutate(
+    across(all_of(subgroup_mask),
+           ~ mean(.x, na.rm = TRUE),
+           .names = "colMean_{.col}")
+  ) |>
+  ungroup() |>
+  # Apply adjustment calculation for each value column using across
+  group_by(Variable) |>
+  mutate(
+    across(all_of(subgroup_mask),
+           ~ (.x - get(paste0("colMean_", cur_column())) - rowMean + grand_total_mean) * 100,
+           .names = "{.col}_di")
   )
 
+library(data.table)
+
+double_index_function <- function()
+subgroup_mask <- c("Value label A", "Value label C", "Value label D", "Value label E")
+
+# Convert to data.table
+dt <- as.data.table(result$colprops_table)
+
+# Calculate grand total mean by Variable
+dt[, grand_total_mean := mean(unlist(.SD), na.rm = TRUE),
+   by = Variable, .SDcols = subgroup_mask]
+
+# Calculate row means
+dt[, rowMean := mean(unlist(.SD), na.rm = TRUE),
+   by = 1:nrow(dt), .SDcols = subgroup_mask]
+
+# Calculate column means by Variable and create column mean columns
+for(col in subgroup_mask) {
+  col_mean_name <- paste0("colMean_", col)
+  dt[, (col_mean_name) := mean(get(col), na.rm = TRUE), by = Variable]
 }
 
-row_vars <- setup_summary_vars()
-col_var <- "s5"
-weight_var <- "no_weight"
-value_labels <- dat |> tveDataLoader::get_valLabels()
-variable_labels <- dat |> tveDataLoader::get_varLabels()
+# Apply adjustment calculation for each value column
+for(col in subgroup_mask) {
+  col_mean_name <- paste0("colMean_", col)
+  adjusted_name <- paste0(col, "_di")
+  dt[, (adjusted_name) := (get(col) - get(col_mean_name) - rowMean + grand_total_mean) * 100]
+}
 
-generate_table_new(dat,row_vars,col_var,weight_var,variable_labels,value_labels)
+# Unselect the temporary columns used for calculations
 
-#still to do - add unit tests and assert that
+dt[, c("grand_total_mean", "rowMean", paste0("colMean_", subgroup_mask)) := NULL]
+
